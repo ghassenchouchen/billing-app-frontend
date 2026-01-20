@@ -1,0 +1,59 @@
+<ng-container *ngIf="isLoginRoute; else mainLayout">
+  <router-outlet></router-outlet>
+</ng-container>
+
+<ng-template #mainLayout>
+  <div class="d-flex h-100">
+    <!-- Sidebar -->
+    <nav class="bg-dark sidebar" id="sidebar">
+      <div class="sidebar-sticky">
+        <h5 class="text-white px-3 py-3">Telecom Billing</h5>
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/Customers" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+              👥 Customers
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/Bills" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+              📄 Bills
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/Contracts" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+              📋 Contracts
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/Services" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+              ⚙️ Services
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/Offers" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+              🎁 Offers
+            </a>
+          </li>
+          <li class="nav-item border-top mt-3 pt-3">
+            <button class="nav-link text-danger border-0 bg-transparent w-100 text-start" type="button" (click)="logout()">
+              🚪 Logout
+            </button>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content flex-fill d-flex flex-column">
+      <!-- Header -->
+      <header class="navbar navbar-dark bg-primary sticky-top">
+        <span class="navbar-brand mb-0 h1">Telecom Billing System</span>
+      </header>
+
+      <!-- Page Content -->
+      <main class="content-area flex-fill p-4">
+        <router-outlet></router-outlet>
+      </main>
+    </div>
+  </div>
+</ng-template>

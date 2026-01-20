@@ -1,0 +1,42 @@
+/* Bills Component Bootstrap Styles */
+.bills-container {
+  padding: 20px;
+}
+
+.bills-card {
+  border: 1px solid #dee2e6;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.bills-table {
+  width: 100%;
+  background-color: white;
+  margin-bottom: 0;
+}
+
+.bills-table thead th {
+  background-color: #0d6efd;
+  color: white;
+  font-weight: 500;
+  border: none;
+}
+
+.bills-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+.bill-info {
+  color: #333;
+  text-align: left;
+  padding: 15px;
+}
+
+.bill-header {
+  color: #0d6efd;
+  text-align: center;
+  padding: 15px;
+  font-size: 1.5em;
+  font-weight: 600;
+}

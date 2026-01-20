@@ -1,0 +1,41 @@
+<div class="contracts-container">
+  <div class="card contracts-card">
+    <div class="card-header bg-primary text-white">
+      <h5 class="card-title mb-0"> Contracts</h5>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-striped table-hover">
+          <thead class="table-dark">
+            <tr>
+              <th>Contract ID</th>
+              <th>Customer</th>
+              <th>Type</th>
+              <th>Start Date</th>
+              <th>End Date</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let contract of listofContracts">
+              <td>{{contract.contract_id}}</td>
+              <td>{{contract.customer_name}}</td>
+              <td>{{contract.type}}</td>
+              <td>{{contract.start_date}}</td>
+              <td>{{contract.end_date}}</td>
+              <td>
+                <span *ngIf="contract.status === 'active'" class="badge bg-success">Active</span>
+                <span *ngIf="contract.status === 'inactive'" class="badge bg-secondary">Inactive</span>
+              </td>
+              <td>
+                <button class="btn btn-sm btn-info me-2"> View</button>
+                <button class="btn btn-sm btn-primary"> Edit</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

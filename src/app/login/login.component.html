@@ -1,0 +1,81 @@
+<div class="auth-shell">
+  <div class="auth-card">
+    <section class="auth-visual">
+      <div class="auth-visual__inner">
+        <span class="auth-badge">Telecom Billing Suite</span>
+        <h1 class="auth-title">Welcome back</h1>
+        <p class="auth-subtitle">Manage customers, contracts, offers, and invoices in one secure workspace.</p>
+        <div class="auth-metrics">
+          <div>
+            <span class="metric-value">24/7</span>
+            <span class="metric-label">Operations</span>
+          </div>
+          <div>
+            <span class="metric-value">99.9%</span>
+            <span class="metric-label">Availability</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="auth-form">
+      <div class="auth-form__header">
+        <div class="brand-mark">TB</div>
+        <div>
+          <h2>Sign in to your account</h2>
+          <p class="muted">Use your assigned credentials to continue.</p>
+        </div>
+      </div>
+
+      <form (ngSubmit)="onSubmit(loginForm)" #loginForm="ngForm" novalidate>
+        <div class="form-group">
+          <label for="username" class="form-label">Username</label>
+          <input
+            type="text"
+            class="form-control"
+            id="username"
+            name="username"
+            ngModel
+            #username="ngModel"
+            placeholder="john.doe"
+            autocomplete="username"
+            required>
+          <small class="text-danger" *ngIf="loginForm.submitted && username.invalid">Username is required.</small>
+        </div>
+
+        <div class="form-group">
+          <label for="password" class="form-label">Password</label>
+          <input
+            type="password"
+            class="form-control"
+            id="password"
+            name="password"
+            ngModel
+            #password="ngModel"
+            placeholder="Enter password"
+            autocomplete="current-password"
+            required>
+          <small class="text-danger" *ngIf="loginForm.submitted && password.invalid">Password is required.</small>
+        </div>
+
+        <div class="form-meta">
+          <label class="checkbox">
+            <input type="checkbox" name="remember" ngModel>
+            <span>Remember me</span>
+          </label>
+          <a class="link" href="#">Forgot password?</a>
+        </div>
+
+        <button type="submit" class="btn-login">Login</button>
+      </form>
+
+      <div class="error-message" *ngIf="errorMessage">
+        {{ errorMessage }}
+      </div>
+
+      <div class="support-note">
+        Need access? Contact your system administrator.
+      </div>
+    </section>
+  </div>
+</div>
