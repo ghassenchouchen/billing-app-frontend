@@ -1,1 +1,46 @@
-<div class="bills-container"><div class="card bills-card"><div class="card-header bg-primary text-white"><h5 class="card-title mb-0"> Bills</h5></div><div class="card-body"><div class="table-responsive"><table class="table table-striped table-hover"><thead class="table-dark"><tr><th>Bill ID</th><th>Customer</th><th>Amount</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead><tbody><tr *ngFor="let bill of listofbills"><td>{{bill.facture_id}}</td><td>{{bill.client_id}}</td><td>${{bill.somme_tot}}</td><td>{{bill.date}}</td><td><span *ngIf="bill.paid === true" class="badge bg-success">Paid</span><span *ngIf="bill.paid === false" class="badge bg-warning">Pending</span></td><td><button class="btn btn-sm btn-info me-2"> View</button><button class="btn btn-sm btn-primary"> Download</button></td></tr></tbody></table></div></div></div></div>
+<div class="page">
+	<div class="page-header">
+		<div>
+			<h2 class="page-title">Factures</h2>
+			<p class="page-subtitle">Suivez les factures, les statuts de paiement et les téléchargements.</p>
+		</div>
+	</div>
+
+	<div class="card section-card data-table">
+		<div class="card-header">
+			<h5 class="card-title mb-0">Historique de facturation</h5>
+		</div>
+		<div class="card-body">
+			<div class="table-responsive">
+				<table class="table table-striped table-hover">
+					<thead>
+						<tr>
+							  <th>ID Facture</th>
+							  <th>Client</th>
+							  <th>Montant</th>
+							  <th>Date</th>
+							  <th>Statut</th>
+							  <th>Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr *ngFor="let bill of listofbills">
+							<td>{{bill.facture_id}}</td>
+							<td>{{bill.client_id}}</td>
+							<td>${{bill.somme_tot}}</td>
+							<td>{{bill.date}}</td>
+							<td>
+								<span *ngIf="bill.paid === true" class="badge bg-success">Payée</span>
+								<span *ngIf="bill.paid === false" class="badge bg-warning">En attente</span>
+							</td>
+							<td>
+								<button class="btn btn-sm btn-outline-primary me-2">Voir</button>
+								<button class="btn btn-sm btn-primary">Télécharger</button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
