@@ -1,1 +1,46 @@
-<div class="offers-container"><div class="card offers-card"><div class="card-header bg-primary text-white"><h5 class="card-title mb-0"> Offers</h5></div><div class="card-body"><div class="table-responsive"><table class="table table-striped table-hover"><thead class="table-dark"><tr><th>Offer ID</th><th>Offer Name</th><th>Description</th><th>Price</th><th>Status</th><th>Actions</th></tr></thead><tbody><tr *ngFor="let offer of listofoffers"><td>{{offer.offer_id}}</td><td>{{offer.name}}</td><td>{{offer.description}}</td><td>${{offer.price}}</td><td><span *ngIf="offer.status === 'active'" class="badge bg-success">Active</span><span *ngIf="offer.status === 'inactive'" class="badge bg-secondary">Inactive</span></td><td><button class="btn btn-sm btn-info me-2"> View</button><button class="btn btn-sm btn-primary"> Edit</button></td></tr></tbody></table></div></div></div></div>
+<div class="page">
+	<div class="page-header">
+		<div>
+			<h2 class="page-title">Offres</h2>
+			<p class="page-subtitle">Définissez les packs, la tarification et la disponibilité.</p>
+		</div>
+	</div>
+
+	<div class="card section-card data-table">
+		<div class="card-header">
+			<h5 class="card-title mb-0">Catalogue des offres</h5>
+		</div>
+		<div class="card-body">
+			<div class="table-responsive">
+				<table class="table table-striped table-hover">
+					<thead>
+						<tr>
+							  <th>ID Offre</th>
+							  <th>Nom de l'offre</th>
+							  <th>Description</th>
+							  <th>Prix</th>
+							  <th>Statut</th>
+							  <th>Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr *ngFor="let offer of listofoffers">
+							<td>{{offer.offer_id}}</td>
+							<td>{{offer.name}}</td>
+							<td>{{offer.description}}</td>
+							<td>${{offer.price}}</td>
+							<td>
+								<span *ngIf="offer.status === 'active'" class="badge bg-success">Active</span>
+								<span *ngIf="offer.status === 'inactive'" class="badge bg-secondary">Inactive</span>
+							</td>
+							<td>
+								<button class="btn btn-sm btn-outline-primary me-2">Voir</button>
+								<button class="btn btn-sm btn-primary">Modifier</button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
