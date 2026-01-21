@@ -56,6 +56,7 @@ export class BillsComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe(data => {
         this.post_paid = data;
+        this.patchBill(data);
       });
   }
 
@@ -64,6 +65,40 @@ export class BillsComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe(data => {
         this.post_sum = data;
+        this.patchBill(data);
       });
+  }
+
+  exportBills(): void {
+    if (!this.listofbills.length) {
+      return;
+    }
+
+    const headers = ['facture_id', 'client_id', 'consom_appel', 'consom_sms', 'consom_internet', 'paid', 'somme_tot'];
+    const rows = this.listofbills.map(bill => [
+      bill.facture_id,
+      bill.client_id,
+      bill.consom_appel,
+      bill.consom_sms,
+      bill.consom_internet,
+      bill.paid ? 'paid' : 'pending',
+      bill.somme_tot
+    ]);
+
+    const csv = [headers, ...rows].map(row => row.map(value => `"${String(value ?? '')}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'factures.csv';
+    link.click();
+    window.URL.revokeObjectURL(url);
+  }
+
+  private patchBill(updated: Bill): void {
+    const index = this.listofbills.findIndex(b => b.facture_id === updated.facture_id);
+    if (index >= 0) {
+      this.listofbills = this.listofbills.map((bill, idx) => idx === index ? { ...bill, ...updated } : bill);
+    }
   }
 }

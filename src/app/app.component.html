@@ -3,55 +3,63 @@
 </ng-container>
 
 <ng-template #mainLayout>
-  <div class="d-flex h-100">
-    <!-- Sidebar -->
-    <nav class="bg-dark sidebar" id="sidebar">
-      <div class="sidebar-sticky">
-        <h5 class="text-white px-3 py-3">Telecom Billing</h5>
-        <ul class="nav flex-column">
-          <li class="nav-item">
-            <a class="nav-link" routerLink="/Customers" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-              👥 Customers
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" routerLink="/Bills" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-              📄 Bills
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" routerLink="/Contracts" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-              📋 Contracts
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" routerLink="/Services" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-              ⚙️ Services
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" routerLink="/Offers" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-              🎁 Offers
-            </a>
-          </li>
-          <li class="nav-item border-top mt-3 pt-3">
-            <button class="nav-link text-danger border-0 bg-transparent w-100 text-start" type="button" (click)="logout()">
-              🚪 Logout
-            </button>
-          </li>
-        </ul>
+  <div class="app-shell">
+    <aside class="app-sidebar">
+      <div class="brand">
+        <div class="brand-icon">TB</div>
+        <div>
+          <div class="brand-title">Facturation Télécom</div>
+          <div class="brand-subtitle">Suite Opérations</div>
+        </div>
       </div>
-    </nav>
 
-    <!-- Main Content -->
-    <div class="main-content flex-fill d-flex flex-column">
-      <!-- Header -->
-      <header class="navbar navbar-dark bg-primary sticky-top">
-        <span class="navbar-brand mb-0 h1">Telecom Billing System</span>
+      <nav class="sidebar-nav">
+        <a class="nav-item" routerLink="/Customers" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+          <span class="material-icons">group</span>
+          Clients
+        </a>
+        <a class="nav-item" routerLink="/Bills" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+          <span class="material-icons">receipt_long</span>
+          Factures
+        </a>
+        <a class="nav-item" routerLink="/Contracts" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+          <span class="material-icons">description</span>
+          Contrats
+        </a>
+        <a class="nav-item" routerLink="/Services" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+          <span class="material-icons">settings</span>
+          Services
+        </a>
+        <a class="nav-item" routerLink="/Offers" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+          <span class="material-icons">redeem</span>
+          Offres
+        </a>
+      </nav>
+    </aside>
+
+    <div class="app-main">
+      <header class="app-topbar">
+        <div class="topbar-left">
+          <div class="topbar-title">Tableau de bord de facturation</div>
+          <div class="topbar-subtitle">Gestion unifiée de la facturation télécom</div>
+        </div>
+        <div class="topbar-actions">
+          <div class="search-pill">
+            <span class="material-icons">search</span>
+            <input type="text" placeholder="Rechercher un client, un contrat..." aria-label="Rechercher" />
+          </div>
+          <div class="user-pill">
+            <span class="material-icons">account_circle</span>
+            Administrateur
+          </div>
+          <button class="btn btn-logout" type="button" (click)="logout()">
+            <span class="material-icons">logout</span>
+            Déconnexion
+          </button>
+        </div>
       </header>
 
-      <!-- Page Content -->
-      <main class="content-area flex-fill p-4">
+      <main class="app-content">
         <router-outlet></router-outlet>
       </main>
     </div>

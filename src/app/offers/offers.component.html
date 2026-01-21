@@ -4,6 +4,10 @@
 			<h2 class="page-title">Offres</h2>
 			<p class="page-subtitle">Définissez les packs, la tarification et la disponibilité.</p>
 		</div>
+		<div class="page-actions">
+			<span class="chip">{{listofoffers.length || 0}} offres</span>
+			<span class="chip secondary">Promotions actives</span>
+		</div>
 	</div>
 
 	<div class="card section-card data-table">
@@ -20,7 +24,6 @@
 							  <th>Description</th>
 							  <th>Prix</th>
 							  <th>Statut</th>
-							  <th>Actions</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -28,14 +31,10 @@
 							<td>{{offer.offer_id}}</td>
 							<td>{{offer.name}}</td>
 							<td>{{offer.description}}</td>
-							<td>${{offer.price}}</td>
+							<td>{{offer.price | number:'1.2-2'}}</td>
 							<td>
-								<span *ngIf="offer.status === 'active'" class="badge bg-success">Active</span>
-								<span *ngIf="offer.status === 'inactive'" class="badge bg-secondary">Inactive</span>
-							</td>
-							<td>
-								<button class="btn btn-sm btn-outline-primary me-2">Voir</button>
-								<button class="btn btn-sm btn-primary">Modifier</button>
+								<span class="badge-soft success" *ngIf="offer.status === 'active'">Active</span>
+								<span class="badge-soft neutral" *ngIf="offer.status !== 'active'">Inactive</span>
 							</td>
 						</tr>
 					</tbody>

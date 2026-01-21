@@ -4,6 +4,10 @@
       <h2 class="page-title">Clients</h2>
       <p class="page-subtitle">Gérez les profils clients et les coordonnées.</p>
     </div>
+    <div class="page-actions">
+      <span class="chip">{{listOfCustomer.length || 0}} clients</span>
+      <span class="chip secondary">Données synchronisées</span>
+    </div>
   </div>
 
   <div class="card section-card data-table">
@@ -33,7 +37,8 @@
               <td>{{customer.email}}</td>
               <td>{{customer.type}}</td>
               <td>
-                <button class="btn btn-sm btn-primary" (click)="detail(customer.client_id)">
+                <button class="btn btn-ghost" type="button" (click)="detail(customer.client_id)">
+                  <span class="material-icons">visibility</span>
                   Voir les détails
                 </button>
               </td>

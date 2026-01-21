@@ -4,6 +4,10 @@
 			<h2 class="page-title">Services</h2>
 			<p class="page-subtitle">Maintenez le catalogue de services et les règles tarifaires.</p>
 		</div>
+		<div class="page-actions">
+			<span class="chip">{{listofServices.length || 0}} services</span>
+			<span class="chip secondary">Catalogue en ligne</span>
+		</div>
 	</div>
 
 	<div class="card section-card data-table">
@@ -20,7 +24,6 @@
 							  <th>Type</th>
 							  <th>Prix</th>
 							  <th>Statut</th>
-							  <th>Actions</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -28,14 +31,10 @@
 							<td>{{service.service_id}}</td>
 							<td>{{service.name}}</td>
 							<td>{{service.type}}</td>
-							<td>${{service.price}}</td>
+							<td>{{service.price | number:'1.2-2'}}</td>
 							<td>
-								<span *ngIf="service.status === 'active'" class="badge bg-success">Actif</span>
-								<span *ngIf="service.status === 'inactive'" class="badge bg-secondary">Inactif</span>
-							</td>
-							<td>
-								<button class="btn btn-sm btn-outline-primary me-2">Voir</button>
-								<button class="btn btn-sm btn-primary">Modifier</button>
+								<span class="badge-soft success" *ngIf="service.status === 'active'">Actif</span>
+								<span class="badge-soft neutral" *ngIf="service.status !== 'active'">Inactif</span>
 							</td>
 						</tr>
 					</tbody>

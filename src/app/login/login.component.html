@@ -2,17 +2,17 @@
   <div class="auth-card">
     <section class="auth-visual">
       <div class="auth-visual__inner">
-        <span class="auth-badge">Telecom Billing Suite</span>
-        <h1 class="auth-title">Welcome back</h1>
-        <p class="auth-subtitle">Manage customers, contracts, offers, and invoices in one secure workspace.</p>
+        <span class="auth-badge">Application de facturation télécom</span>
+        <h1 class="auth-title">Bon retour</h1>
+        <p class="auth-subtitle">Gérez les clients, contrats, offres et factures dans un espace sécurisé.</p>
         <div class="auth-metrics">
           <div>
             <span class="metric-value">24/7</span>
-            <span class="metric-label">Operations</span>
+            <span class="metric-label">Opérations</span>
           </div>
           <div>
             <span class="metric-value">99.9%</span>
-            <span class="metric-label">Availability</span>
+            <span class="metric-label">Disponibilité</span>
           </div>
         </div>
       </div>
@@ -22,14 +22,14 @@
       <div class="auth-form__header">
         <div class="brand-mark">TB</div>
         <div>
-          <h2>Sign in to your account</h2>
-          <p class="muted">Use your assigned credentials to continue.</p>
+          <h2>Connexion à votre compte</h2>
+          <p class="muted">Utilisez vos identifiants pour continuer.</p>
         </div>
       </div>
 
       <form (ngSubmit)="onSubmit(loginForm)" #loginForm="ngForm" novalidate>
         <div class="form-group">
-          <label for="username" class="form-label">Username</label>
+          <label for="username" class="form-label">Nom d'utilisateur</label>
           <input
             type="text"
             class="form-control"
@@ -40,11 +40,11 @@
             placeholder="john.doe"
             autocomplete="username"
             required>
-          <small class="text-danger" *ngIf="loginForm.submitted && username.invalid">Username is required.</small>
+          <small class="text-danger" *ngIf="loginForm.submitted && username.invalid">Le nom d'utilisateur est requis.</small>
         </div>
 
         <div class="form-group">
-          <label for="password" class="form-label">Password</label>
+          <label for="password" class="form-label">Mot de passe</label>
           <input
             type="password"
             class="form-control"
@@ -52,21 +52,21 @@
             name="password"
             ngModel
             #password="ngModel"
-            placeholder="Enter password"
+            placeholder="Saisir le mot de passe"
             autocomplete="current-password"
             required>
-          <small class="text-danger" *ngIf="loginForm.submitted && password.invalid">Password is required.</small>
+          <small class="text-danger" *ngIf="loginForm.submitted && password.invalid">Le mot de passe est requis.</small>
         </div>
 
         <div class="form-meta">
           <label class="checkbox">
             <input type="checkbox" name="remember" ngModel>
-            <span>Remember me</span>
+            <span>Se souvenir de moi</span>
           </label>
-          <a class="link" href="#">Forgot password?</a>
+          <a class="link" href="#">Mot de passe oublié ?</a>
         </div>
 
-        <button type="submit" class="btn-login">Login</button>
+        <button type="submit" class="btn-login">Se connecter</button>
       </form>
 
       <div class="error-message" *ngIf="errorMessage">
@@ -74,7 +74,7 @@
       </div>
 
       <div class="support-note">
-        Need access? Contact your system administrator.
+        Besoin d'accès ? Contactez votre administrateur système.
       </div>
     </section>
   </div>

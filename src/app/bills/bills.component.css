@@ -1,42 +1,64 @@
-/* Bills Component Bootstrap Styles */
-.bills-container {
-  padding: 20px;
+.page {
+  min-height: 100%;
 }
 
-.bills-card {
-  border: 1px solid #dee2e6;
-  border-radius: 0.5rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin-bottom: 20px;
+.table td,
+.table th {
+  vertical-align: middle;
 }
 
-.bills-table {
-  width: 100%;
-  background-color: white;
-  margin-bottom: 0;
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
 }
 
-.bills-table thead th {
-  background-color: #0d6efd;
-  color: white;
-  font-weight: 500;
-  border: none;
+.section-subtitle {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 13px;
 }
 
-.bills-table tbody tr:hover {
-  background-color: #f8f9fa;
-}
-
-.bill-info {
-  color: #333;
-  text-align: left;
-  padding: 15px;
-}
-
-.bill-header {
-  color: #0d6efd;
-  text-align: center;
-  padding: 15px;
-  font-size: 1.5em;
+.section-header .btn {
+  border-radius: 10px;
+  padding: 8px 14px;
   font-weight: 600;
+}
+
+.btn-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: #fff;
+  font-weight: 600;
+  color: var(--ink);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.btn-action.primary {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+
+.btn-action:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.actions-cell {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.bill-details {
+  display: grid;
+  gap: 12px;
+  font-size: 14px;
 }

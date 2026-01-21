@@ -1,34 +1,8 @@
-/* Component Bootstrap Styles */
-.container {
-  padding: 20px;
+.page {
+  min-height: 100%;
 }
 
-.card {
-  border: 1px solid #dee2e6;
-  border-radius: 0.5rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin-bottom: 20px;
-}
-
-.table {
-  width: 100%;
-  background-color: white;
-  margin-bottom: 0;
-}
-
-.table thead th {
-  background-color: #0d6efd;
-  color: white;
-  font-weight: 500;
-  border: none;
-}
-
-.table tbody tr:hover {
-  background-color: #f8f9fa;
-}
-
-.btn {
-  border-radius: 0.4rem;
-  font-weight: 500;
-  transition: all 0.3s ease;
+.table td,
+.table th {
+  vertical-align: middle;
 }

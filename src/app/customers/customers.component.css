@@ -16,9 +16,9 @@
 .details-card {
   position: sticky;
   top: 24px;
-  border: 1px solid #dee2e6;
-  border-radius: 0.5rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--card-shadow);
 }
 
 .detail-row {
@@ -29,11 +29,17 @@
 
 .detail-row .label {
   font-weight: 500;
-  color: #666;
+  color: var(--muted);
 }
 
 .detail-row .value {
-  color: #333;
+  color: var(--ink);
+}
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
 @media (max-width: 960px) {

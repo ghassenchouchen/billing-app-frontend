@@ -1,20 +1,30 @@
-<div class="contracts-container">
-  <div class="card contracts-card">
-    <div class="card-header bg-primary text-white">
-      <h5 class="card-title mb-0"> Contracts</h5>
+<div class="page">
+  <div class="page-header">
+    <div>
+      <h2 class="page-title">Contrats</h2>
+      <p class="page-subtitle">Suivez les contrats actifs et leurs statuts.</p>
+    </div>
+    <div class="page-actions">
+      <span class="chip">{{listofContracts.length || 0}} contrats</span>
+      <span class="chip secondary">Surveillance active</span>
+    </div>
+  </div>
+
+  <div class="card section-card data-table">
+    <div class="card-header">
+      <h5 class="card-title mb-0">Catalogue des contrats</h5>
     </div>
     <div class="card-body">
       <div class="table-responsive">
         <table class="table table-striped table-hover">
-          <thead class="table-dark">
+          <thead>
             <tr>
-              <th>Contract ID</th>
-              <th>Customer</th>
+              <th>ID Contrat</th>
+              <th>Client</th>
               <th>Type</th>
-              <th>Start Date</th>
-              <th>End Date</th>
-              <th>Status</th>
-              <th>Actions</th>
+              <th>Date début</th>
+              <th>Date fin</th>
+              <th>Statut</th>
             </tr>
           </thead>
           <tbody>
@@ -22,15 +32,11 @@
               <td>{{contract.contract_id}}</td>
               <td>{{contract.customer_name}}</td>
               <td>{{contract.type}}</td>
-              <td>{{contract.start_date}}</td>
-              <td>{{contract.end_date}}</td>
+              <td>{{contract.start_date || '—'}}</td>
+              <td>{{contract.end_date || '—'}}</td>
               <td>
-                <span *ngIf="contract.status === 'active'" class="badge bg-success">Active</span>
-                <span *ngIf="contract.status === 'inactive'" class="badge bg-secondary">Inactive</span>
-              </td>
-              <td>
-                <button class="btn btn-sm btn-info me-2"> View</button>
-                <button class="btn btn-sm btn-primary"> Edit</button>
+                <span class="badge-soft success" *ngIf="contract.status === 'active'">Actif</span>
+                <span class="badge-soft neutral" *ngIf="contract.status !== 'active'">Inactif</span>
               </td>
             </tr>
           </tbody>

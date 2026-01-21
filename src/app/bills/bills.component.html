@@ -2,44 +2,84 @@
 	<div class="page-header">
 		<div>
 			<h2 class="page-title">Factures</h2>
-			<p class="page-subtitle">Suivez les factures, les statuts de paiement et les téléchargements.</p>
+			<p class="page-subtitle">Suivez les factures, les statuts de paiement et les montants.</p>
+		</div>
+		<div class="page-actions">
+			<span class="chip">{{listofbills.length || 0}} factures</span>
+			<span class="chip secondary">Recalcul automatique activé</span>
 		</div>
 	</div>
 
 	<div class="card section-card data-table">
-		<div class="card-header">
-			<h5 class="card-title mb-0">Historique de facturation</h5>
+		<div class="card-header section-header">
+			<div>
+				<h5 class="card-title mb-1">Historique de facturation</h5>
+				<p class="section-subtitle">Vue d’ensemble des factures et statuts de paiement.</p>
+			</div>
+			<button class="btn btn-outline-primary btn-sm" type="button" (click)="exportBills()" [disabled]="!listofbills.length">
+				Exporter
+			</button>
 		</div>
 		<div class="card-body">
 			<div class="table-responsive">
 				<table class="table table-striped table-hover">
 					<thead>
 						<tr>
-							  <th>ID Facture</th>
-							  <th>Client</th>
-							  <th>Montant</th>
-							  <th>Date</th>
-							  <th>Statut</th>
-							  <th>Actions</th>
+							<th>ID Facture</th>
+							<th>Client</th>
+							<th>Montant</th>
+							<th>Date</th>
+							<th>Statut</th>
+							<th>Actions</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr *ngFor="let bill of listofbills">
-							<td>{{bill.facture_id}}</td>
-							<td>{{bill.client_id}}</td>
-							<td>${{bill.somme_tot}}</td>
-							<td>{{bill.date}}</td>
+							  <td>{{bill.facture_id}}</td>
+							  <td>{{bill.client_id}}</td>
+							<td>{{bill.somme_tot | number:'1.2-2'}}</td>
+							<td>{{bill.date || '—'}}</td>
 							<td>
-								<span *ngIf="bill.paid === true" class="badge bg-success">Payée</span>
-								<span *ngIf="bill.paid === false" class="badge bg-warning">En attente</span>
+								<span class="badge-soft success" *ngIf="bill.paid">Payée</span>
+								<span class="badge-soft warning" *ngIf="!bill.paid">En attente</span>
 							</td>
-							<td>
-								<button class="btn btn-sm btn-outline-primary me-2">Voir</button>
-								<button class="btn btn-sm btn-primary">Télécharger</button>
+							<td class="actions-cell">
+								<button class="btn btn-ghost" type="button" (click)="detail(bill.facture_id, bill.client_id)">
+									Voir les détails
+								</button>
+								<button class="btn btn-action" type="button" (click)="Calculate(bill.facture_id)">
+									<span class="material-icons">calculate</span>
+									Calculer
+								</button>
+								<button class="btn btn-action primary" type="button" (click)="pay(bill.facture_id)" [disabled]="bill.paid">
+									<span class="material-icons">payments</span>
+									Payer
+								</button>
 							</td>
 						</tr>
 					</tbody>
 				</table>
+			</div>
+		</div>
+	</div>
+
+	<div class="card section-card" *ngIf="billdetails">
+		<div class="card-header">
+			<h5 class="card-title mb-0">Détails de la facture</h5>
+		</div>
+		<div class="card-body bill-details">
+			<div>
+				<strong>Facture:</strong> #{{billdetails.facture_id}}
+			</div>
+			<div>
+				<strong>Client:</strong> {{customer_detail?.prenom}} {{customer_detail?.nom}}
+			</div>
+			<div>
+				<strong>Consommation:</strong>
+				{{billdetails.consom_appel}} appel / {{billdetails.consom_sms}} SMS / {{billdetails.consom_internet}} internet
+			</div>
+			<div>
+				<strong>Montant:</strong> {{billdetails.somme_tot | number:'1.2-2'}}
 			</div>
 		</div>
 	</div>
