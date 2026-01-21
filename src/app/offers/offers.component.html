@@ -12,9 +12,39 @@
 
 	<div class="card section-card data-table">
 		<div class="card-header">
-			<h5 class="card-title mb-0">Catalogue des offres</h5>
+			<div>
+				<h5 class="card-title mb-0">Catalogue des offres</h5>
+			</div>
+			<button class="btn btn-action primary" type="button" (click)="openCreateForm()" [disabled]="showForm">
+				<span class="material-icons">add</span>
+				Ajouter une offre
+			</button>
 		</div>
 		<div class="card-body">
+			<div *ngIf="showForm" class="form-section">
+				<h6>{{ formMode === 'create' ? 'Nouvelle offre' : 'Modifier l\'offre' }}</h6>
+				<div class="form-group">
+					<label>Nom de l'offre</label>
+					<input class="form-control" type="text" [(ngModel)]="formData.name" />
+				</div>
+				<div class="form-group">
+					<label>Service</label>
+					<select class="form-control" [(ngModel)]="formData.service_id">
+						<option value="">-- Sélectionnez un service --</option>
+						<option *ngFor="let service of availableServices" [value]="service.service_id">
+							{{ service.name }} ({{ service.price | number:'1.2-2' }})
+						</option>
+					</select>
+				</div>
+				<div class="form-actions">
+					<button class="btn btn-action primary" type="button" (click)="saveOffer()" [disabled]="saving || !formData.name || !formData.service_id">
+						{{ saving ? 'Sauvegarde…' : 'Sauvegarder' }}
+					</button>
+					<button class="btn btn-ghost" type="button" (click)="closeForm()" [disabled]="saving">
+						Annuler
+					</button>
+				</div>
+			</div>
 			<div class="table-responsive">
 				<table class="table table-striped table-hover">
 					<thead>
@@ -24,6 +54,7 @@
 							  <th>Description</th>
 							  <th>Prix</th>
 							  <th>Statut</th>
+							  <th>Actions</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -36,6 +67,16 @@
 								<span class="badge-soft success" *ngIf="offer.status === 'active'">Active</span>
 								<span class="badge-soft neutral" *ngIf="offer.status !== 'active'">Inactive</span>
 							</td>
+							<td class="actions-cell">
+								<button class="btn btn-ghost" type="button" (click)="openEditForm(offer)">
+									<span class="material-icons">edit</span>
+									Modifier
+								</button>
+								<button class="btn btn-ghost" type="button" (click)="deleteOffer(offer.offer_id)">
+									<span class="material-icons">delete</span>
+									Supprimer
+								</button>
+							</td>
 						</tr>
 					</tbody>
 				</table>
@@ -43,3 +84,13 @@
 		</div>
 	</div>
 </div>
+
+<app-confirm-modal
+  [show]="showConfirmModal"
+  [title]="confirmModalConfig.title"
+  [message]="confirmModalConfig.message"
+  confirmText="Supprimer"
+  confirmClass="danger"
+  (confirmed)="confirmModalConfig.action && confirmModalConfig.action()"
+  (cancelled)="cancelConfirm()">
+</app-confirm-modal>

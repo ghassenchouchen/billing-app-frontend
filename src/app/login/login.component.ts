@@ -16,6 +16,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   loginError: string = '';
   errorMessage: string = '';
   returnUrl: string = '';
+  isCustomerLogin: boolean = false;
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -25,7 +26,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    // Get return url from route parameters or default to '/Customers'
+    // Get return url from route parameters or default to '/Customers' or '/Portal'
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/Customers';
   }
 
@@ -62,12 +63,13 @@ export class LoginComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.authService.login(username, password)
+    this.authService.login(username, password, this.isCustomerLogin)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
           if (response.login) {
-            this.router.navigate([this.returnUrl]);
+            const redirectUrl = this.isCustomerLogin ? '/Portal' : (this.returnUrl || '/Customers');
+            this.router.navigate([redirectUrl]);
           } else {
             this.notcorrect1 = !response.userName;
             this.notcorrect2 = !response.password;

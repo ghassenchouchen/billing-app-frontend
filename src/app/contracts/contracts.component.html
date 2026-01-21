@@ -25,6 +25,7 @@
               <th>Date début</th>
               <th>Date fin</th>
               <th>Statut</th>
+                <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -36,7 +37,19 @@
               <td>{{contract.end_date || '—'}}</td>
               <td>
                 <span class="badge-soft success" *ngIf="contract.status === 'active'">Actif</span>
-                <span class="badge-soft neutral" *ngIf="contract.status !== 'active'">Inactif</span>
+                <span class="badge-soft info" *ngIf="contract.status === 'suspended'">Suspendu</span>
+                <span class="badge-soft warning" *ngIf="contract.status === 'cancel_requested'">Annulation demandée</span>
+                <span class="badge-soft neutral" *ngIf="contract.status !== 'active' && contract.status !== 'suspended' && contract.status !== 'cancel_requested'">Inactif</span>
+              </td>
+              <td class="actions-cell">
+                <!--<button class="btn btn-ghost" type="button" (click)="detail(contract.contract_id)">
+                  <span class="material-icons">visibility</span>
+                  Détails
+                </button>-->
+                <button class="btn btn-ghost danger" type="button" (click)="deactivate(contract.contract_id)" [disabled]="contract.status === 'inactive' || deactivatingId === contract.contract_id">
+                  <span class="material-icons">block</span>
+                  {{ deactivatingId === contract.contract_id ? 'Désactivation…' : 'Désactiver' }}
+                </button>
               </td>
             </tr>
           </tbody>
@@ -45,3 +58,13 @@
     </div>
   </div>
 </div>
+
+<app-confirm-modal
+  [show]="showConfirmModal"
+  [title]="confirmModalConfig.title"
+  [message]="confirmModalConfig.message"
+  confirmText="Désactiver"
+  confirmClass="danger"
+  (confirmed)="confirmModalConfig.action && confirmModalConfig.action()"
+  (cancelled)="cancelConfirm()">
+</app-confirm-modal>

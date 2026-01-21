@@ -49,39 +49,33 @@
     </div>
   </div>
 
-  <div class="card section-card" *ngIf="customerdetails">
-    <div class="card-header">
-      <h5 class="card-title mb-0">Détails du client</h5>
+  <div class="card section-card customer-details" *ngIf="customerdetails">
+    <div class="card-header details-header">
+      <div class="details-identity">
+        <div class="details-avatar">
+          {{customerdetails.prenom?.charAt(0)}}{{customerdetails.nom?.charAt(0)}}
+        </div>
+        <div>
+          <div class="details-name">{{customerdetails.prenom}} {{customerdetails.nom}}</div>
+          <div class="details-subtitle">Client #{{customerdetails.client_id}}</div>
+        </div>
+      </div>
+      <span class="badge-soft neutral">{{customerdetails.type}}</span>
     </div>
     <div class="card-body">
-      <div class="detail-row">
-        <span class="label"><strong>ID Client :</strong></span>
-        <span class="value">{{customerdetails.client_id}}</span>
-      </div>
-      <hr>
-      <div class="detail-row">
-        <span class="label"><strong>Nom :</strong></span>
-        <span class="value">{{customerdetails.nom}}</span>
-      </div>
-      <hr>
-      <div class="detail-row">
-        <span class="label"><strong>Prénom :</strong></span>
-        <span class="value">{{customerdetails.prenom}}</span>
-      </div>
-      <hr>
-      <div class="detail-row">
-        <span class="label"><strong>Adresse :</strong></span>
-        <span class="value">{{customerdetails.adresse}}</span>
-      </div>
-      <hr>
-      <div class="detail-row">
-        <span class="label"><strong>Email :</strong></span>
-        <span class="value">{{customerdetails.email}}</span>
-      </div>
-      <hr>
-      <div class="detail-row">
-        <span class="label"><strong>Type :</strong></span>
-        <span class="value">{{customerdetails.type}}</span>
+      <div class="details-grid">
+        <div class="detail-card">
+          <div class="detail-label">Email</div>
+          <div class="detail-value">{{customerdetails.email}}</div>
+        </div>
+        <div class="detail-card">
+          <div class="detail-label">Adresse</div>
+          <div class="detail-value">{{customerdetails.adresse}}</div>
+        </div>
+        <div class="detail-card">
+          <div class="detail-label">Type de client</div>
+          <div class="detail-value">{{customerdetails.type}}</div>
+        </div>
       </div>
     </div>
   </div>

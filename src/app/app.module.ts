@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule }   from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -15,6 +16,11 @@ import { ContractsComponent } from './contracts/contracts.component';
 import { OffersComponent } from './offers/offers.component';
 import { BillsComponent } from './bills/bills.component';
 import { LoginComponent } from './login/login.component';
+import { CustomerPortalComponent } from './customer-portal/customer-portal.component';
+import { CustomerContractsComponent } from './customer-portal/customer-contracts/customer-contracts.component';
+import { CustomerBillsComponent } from './customer-portal/customer-bills/customer-bills.component';
+import { CustomerPaymentsComponent } from './customer-portal/customer-payments/customer-payments.component';
+import { ConfirmModalComponent } from './shared/components/confirm-modal/confirm-modal.component';
 
 // Core Services
 import { ApiService } from './core/services/api.service';
@@ -33,9 +39,15 @@ import { ErrorInterceptor } from './core/interceptors/error.interceptor';
     OffersComponent,
     BillsComponent,
     LoginComponent,
+    CustomerPortalComponent,
+    CustomerContractsComponent,
+    CustomerBillsComponent,
+    CustomerPaymentsComponent,
+    ConfirmModalComponent,
   ],
   imports: [
     BrowserModule,
+    CommonModule,
     AppRoutingModule,
     FormsModule,
     HttpClientModule,

@@ -75,6 +75,10 @@
   flex-direction: column;
 }
 
+.app-main.customer-portal {
+  background: linear-gradient(180deg, #f0f9ff 0%, #f8fafc 60%, #ffffff 100%);
+}
+
 .app-topbar {
   padding: 20px 32px;
   display: flex;
@@ -123,6 +127,73 @@
   font-size: 13px;
 }
 
+.search-wrapper {
+  position: relative;
+}
+
+.search-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  width: 420px;
+  max-height: 360px;
+  overflow: auto;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: var(--card-shadow);
+  padding: 12px;
+  z-index: 20;
+}
+
+.search-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.search-section__title {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+.search-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background: #f8fafc;
+  text-align: left;
+}
+
+.search-item:hover {
+  background: #eef2ff;
+  border-color: #e0e7ff;
+}
+
+.search-item__label {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.search-item__sublabel {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.search-empty {
+  padding: 16px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
 .btn-logout {
   display: inline-flex;
   align-items: center;
@@ -162,6 +233,10 @@
   .search-pill {
     min-width: 200px;
   }
+
+  .search-panel {
+    width: 360px;
+  }
 }
 
 @media (max-width: 1024px) {
@@ -182,5 +257,11 @@
 
   .search-pill {
     min-width: 100%;
+  }
+
+  .search-panel {
+    position: static;
+    width: 100%;
+    margin-top: 8px;
   }
 }

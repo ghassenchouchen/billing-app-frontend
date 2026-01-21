@@ -1,0 +1,73 @@
+<div class="page">
+  <div class="page-header">
+    <div>
+      <h2 class="page-title">Mon Espace Client</h2>
+      <p class="page-subtitle">Gérez vos contrats, factures et paiements</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-sm" (click)="logout()">
+        <span class="material-icons">logout</span>
+        Déconnexion
+      </button>
+    </div>
+  </div>
+
+  <!-- Customer Information Card -->
+  <div class="customer-info-card">
+    <div class="info-header">
+      <div class="info-avatar">
+        <span class="material-icons">account_circle</span>
+      </div>
+      <div class="info-details">
+        <h3>{{ userName }}</h3>
+        <p class="info-meta">Client ID: {{ currentCustomerId }}</p>
+      </div>
+    </div>
+    <div class="info-status">
+      <span class="status-badge active">{{ accountStatus }}</span>
+    </div>
+  </div>
+
+  <div class="tabs-container">
+    <div class="tabs-nav">
+      <button 
+        class="tab-button" 
+        [class.active]="activeTab === 'contracts'"
+        (click)="setActiveTab('contracts')">
+        <span class="material-icons">assignment</span>
+        Mes contrats
+      </button>
+      <button 
+        class="tab-button" 
+        [class.active]="activeTab === 'bills'"
+        (click)="setActiveTab('bills')">
+        <span class="material-icons">receipt</span>
+        Mes factures
+      </button>
+      <button 
+        class="tab-button" 
+        [class.active]="activeTab === 'payments'"
+        (click)="setActiveTab('payments')">
+        <span class="material-icons">payment</span>
+        Paiements
+      </button>
+    </div>
+
+    <div class="tabs-content">
+      <!-- Contracts Tab -->
+      <div class="tab-pane" *ngIf="activeTab === 'contracts'">
+        <app-customer-contracts [customerId]="currentCustomerId"></app-customer-contracts>
+      </div>
+
+      <!-- Bills Tab -->
+      <div class="tab-pane" *ngIf="activeTab === 'bills'">
+        <app-customer-bills [customerId]="currentCustomerId"></app-customer-bills>
+      </div>
+
+      <!-- Payments Tab -->
+      <div class="tab-pane" *ngIf="activeTab === 'payments'">
+        <app-customer-payments [customerId]="currentCustomerId"></app-customer-payments>
+      </div>
+    </div>
+  </div>
+</div>

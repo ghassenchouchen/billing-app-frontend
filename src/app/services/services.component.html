@@ -12,9 +12,55 @@
 
 	<div class="card section-card data-table">
 		<div class="card-header">
-			<h5 class="card-title mb-0">Catalogue des services</h5>
+			<div>
+				<h5 class="card-title mb-0">Catalogue des services</h5>
+			</div>
+			<button class="btn btn-action primary" type="button" (click)="openCreateForm()" [disabled]="showForm">
+				<span class="material-icons">add</span>
+				Ajouter un service
+			</button>
 		</div>
 		<div class="card-body">
+			<div *ngIf="showForm" class="form-section">
+				<h6>{{ formMode === 'create' ? 'Nouveau service' : 'Modifier le service' }}</h6>
+				<div class="form-group">
+					<label>Nom du service</label>
+					<input class="form-control" type="text" [(ngModel)]="formData.designation" />
+				</div>
+				<div class="form-group">
+					<label>Prix unitaire</label>
+					<input class="form-control" type="number" [(ngModel)]="formData.prix_unite" step="0.01" />
+				</div>
+				<div class="form-group">
+					<label>Unité</label>
+					<select class="form-control" [(ngModel)]="formData.unite">
+						<option value="SECONDE">Secondes (Appels)</option>
+						<option value="OCTET">Octets (Internet)</option>
+						<option value="SMS">SMS</option>
+					</select>
+				</div>
+				<div class="form-group">
+					<label>
+						<span *ngIf="formData.unite === 'SMS'">Nombre de messages inclus</span>
+						<span *ngIf="formData.unite === 'SECONDE'">Nombre de secondes/minutes inclus</span>
+						<span *ngIf="formData.unite === 'OCTET'">Quantité de données incluse (en octets)</span>
+					</label>
+					<input class="form-control" type="number" [(ngModel)]="formData.included_quantity" step="1" min="0" />
+					<small class="form-text text-muted">
+						<span *ngIf="formData.unite === 'SMS'">Ex: 100 messages</span>
+						<span *ngIf="formData.unite === 'SECONDE'">Ex: 3600 secondes = 60 minutes</span>
+						<span *ngIf="formData.unite === 'OCTET'">Ex: 1073741824 octets = 1 GB</span>
+					</small>
+				</div>
+				<div class="form-actions">
+					<button class="btn btn-action primary" type="button" (click)="saveService()" [disabled]="saving || !formData.designation">
+						{{ saving ? 'Sauvegarde…' : 'Sauvegarder' }}
+					</button>
+					<button class="btn btn-ghost" type="button" (click)="closeForm()" [disabled]="saving">
+						Annuler
+					</button>
+				</div>
+			</div>
 			<div class="table-responsive">
 				<table class="table table-striped table-hover">
 					<thead>
@@ -24,6 +70,7 @@
 							  <th>Type</th>
 							  <th>Prix</th>
 							  <th>Statut</th>
+							  <th>Actions</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -36,6 +83,16 @@
 								<span class="badge-soft success" *ngIf="service.status === 'active'">Actif</span>
 								<span class="badge-soft neutral" *ngIf="service.status !== 'active'">Inactif</span>
 							</td>
+							<td class="actions-cell">
+								<button class="btn btn-ghost" type="button" (click)="openEditForm(service)">
+									<span class="material-icons">edit</span>
+									Modifier
+								</button>
+								<button class="btn btn-ghost" type="button" (click)="deleteService(service.service_id)">
+									<span class="material-icons">delete</span>
+									Supprimer
+								</button>
+							</td>
 						</tr>
 					</tbody>
 				</table>
@@ -43,3 +100,13 @@
 		</div>
 	</div>
 </div>
+
+<app-confirm-modal
+  [show]="showConfirmModal"
+  [title]="confirmModalConfig.title"
+  [message]="confirmModalConfig.message"
+  confirmText="Supprimer"
+  confirmClass="danger"
+  (confirmed)="confirmModalConfig.action && confirmModalConfig.action()"
+  (cancelled)="cancelConfirm()">
+</app-confirm-modal>
