@@ -17,13 +17,16 @@
         <tbody>
           <tr *ngFor="let bill of listofBills">
             <td>{{bill.facture_id}}</td>
-            <td>{{bill.amount | number:'1.2-2'}} €</td>
+            <td>{{bill.somme_tot | number:'1.2-2'}} TND</td>
             <td>
+              <!-- Invoice status badges in French - Lifecycle: DRAFT → ISSUED → PAID -->
+              <span class="badge-soft neutral" *ngIf="bill.status === 'draft'">Brouillon</span>
               <span class="badge-soft success" *ngIf="isPaid(bill.status)">Payée</span>
-              <span class="badge-soft warning" *ngIf="bill.status === 'issued'">En attente de paiement</span>
+              <span class="badge-soft warning" *ngIf="bill.status === 'issued'">Émise</span>
               <span class="badge-soft danger" *ngIf="bill.status === 'overdue'">En retard</span>
               <span class="badge-soft info" *ngIf="bill.status === 'partially_paid'">Partiellement payée</span>
-              <span class="badge-soft neutral" *ngIf="!['paid', 'issued', 'overdue', 'partially_paid'].includes(bill.status)">{{bill.status}}</span>
+              <span class="badge-soft secondary" *ngIf="bill.status === 'cancelled'">Annulée</span>
+              <span class="badge-soft neutral" *ngIf="!['draft', 'paid', 'issued', 'overdue', 'partially_paid', 'cancelled'].includes(bill.status)">{{bill.status}}</span>
             </td>
             <td>{{bill.issue_date || '—'}}</td>
             <td>
@@ -57,15 +60,18 @@
     </div>
     <div class="detail-row">
       <span class="detail-label">Montant total:</span>
-      <span class="detail-value">{{billdetails.amount | number:'1.2-2'}} €</span>
+      <span class="detail-value">{{billdetails.somme_tot | number:'1.2-2'}} TND</span>
     </div>
     <div class="detail-row">
       <span class="detail-label">Statut:</span>
       <span class="detail-value">
+        <!-- Invoice status badges in French - Lifecycle: DRAFT → ISSUED → PAID -->
+        <span class="badge-soft neutral" *ngIf="billdetails.status === 'draft'">Brouillon</span>
         <span class="badge-soft success" *ngIf="isPaid(billdetails.status)">Payée</span>
-        <span class="badge-soft warning" *ngIf="billdetails.status === 'issued'">En attente de paiement</span>
+        <span class="badge-soft warning" *ngIf="billdetails.status === 'issued'">Émise</span>
         <span class="badge-soft danger" *ngIf="billdetails.status === 'overdue'">En retard</span>
         <span class="badge-soft info" *ngIf="billdetails.status === 'partially_paid'">Partiellement payée</span>
+        <span class="badge-soft secondary" *ngIf="billdetails.status === 'cancelled'">Annulée</span>
       </span>
     </div>
     <div class="detail-row">
@@ -92,8 +98,8 @@
           <tr *ngFor="let line of billLines">
             <td>{{line.description}}</td>
             <td>{{line.quantity}}</td>
-            <td>{{line.unit_price | number:'1.2-2'}} €</td>
-            <td>{{line.total | number:'1.2-2'}} €</td>
+            <td>{{line.unit_price | number:'1.2-2'}} TND</td>
+            <td>{{line.amount | number:'1.2-2'}} TND</td>
           </tr>
         </tbody>
       </table>

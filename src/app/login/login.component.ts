@@ -79,8 +79,9 @@ export class LoginComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           console.error('Login error:', error);
-          this.loginError = 'An error occurred during login. Please try again.';
-          this.errorMessage = 'An error occurred during login. Please try again.';
+          const message = (error && (error.message || error.error || error.toString())) || 'An error occurred during login. Please try again.';
+          this.loginError = message;
+          this.errorMessage = message;
         }
       });
   }

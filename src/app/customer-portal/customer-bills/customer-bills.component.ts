@@ -45,11 +45,9 @@ export class CustomerBillsComponent implements OnInit, OnDestroy {
     this.billService.getBillDetails(id)
       .pipe(takeUntil(this.destroy$))
       .subscribe((data) => {
-        // Only show if it's the customer's bill
-        if (data.client_id === this.customerId) {
-          this.billdetails = data;
-          this.loadBillLines(id);
-        }
+        // Backend already filters bills by customer; show details directly
+        this.billdetails = data;
+        this.loadBillLines(id);
       });
   }
 

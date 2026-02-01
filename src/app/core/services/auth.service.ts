@@ -32,15 +32,22 @@ export class AuthService {
       userName: username,
       password: password
     }).pipe(
+      // Block admin login for non-admin usernames by raising an error
+      map((response) => {
+        if (response.login && !isCustomer && username !== 'admin') {
+          throw new Error('Only the admin account can access the admin area.');
+        }
+        return response;
+      }),
       tap(response => {
         if (response.login) {
+          const role = isCustomer ? 'customer' : 'admin';
           this.setToken(response.token || 'temp-token');
           this.setUser(username);
-          localStorage.setItem('userName', username); 
-          const role = isCustomer ? 'customer' : 'admin';
+          localStorage.setItem('userName', username);
           this.setRole(role);
           if (isCustomer) {
-            this.setCustomerId(username); 
+            this.setCustomerId(username);
           }
           this.isAuthenticatedSubject.next(true);
           this.userRoleSubject.next(role);

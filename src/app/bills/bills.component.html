@@ -61,9 +61,14 @@
 							<td>{{bill.somme_tot | number:'1.2-2'}}</td>
 							<td>{{bill.date || '—'}}</td>
 							<td>
+								<!-- Invoice status badges in French -->
+								<span class="badge-soft neutral" *ngIf="bill.status === 'draft'">Brouillon</span>
 								<span class="badge-soft success" *ngIf="bill.status === 'paid'">Payée</span>
 								<span class="badge-soft info" *ngIf="bill.status === 'partially_paid'">Partiellement payée</span>
-								<span class="badge-soft warning" *ngIf="bill.status !== 'paid' && bill.status !== 'partially_paid'">En attente</span>
+								<span class="badge-soft warning" *ngIf="bill.status === 'issued'">Émise</span>
+								<span class="badge-soft danger" *ngIf="bill.status === 'overdue'">En retard</span>
+								<span class="badge-soft secondary" *ngIf="bill.status === 'cancelled'">Annulée</span>
+								<span class="badge-soft warning" *ngIf="!['draft', 'paid', 'partially_paid', 'issued', 'overdue', 'cancelled'].includes(bill.status)">En attente</span>
 							</td>
 							<td class="actions-cell">
 								<button class="btn btn-ghost" type="button" (click)="detail(bill.facture_id)">
