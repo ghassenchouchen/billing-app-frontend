@@ -16,22 +16,22 @@
         </thead>
         <tbody>
           <tr *ngFor="let bill of listofBills">
-            <td>{{bill.facture_id}}</td>
-            <td>{{bill.amount | number:'1.2-2'}} €</td>
+            <td>{{bill.numeroFacture || bill.id}}</td>
+            <td>{{bill.montantTTC | number:'1.2-2'}} €</td>
             <td>
-              <span class="badge-soft success" *ngIf="isPaid(bill.status)">Payée</span>
-              <span class="badge-soft warning" *ngIf="bill.status === 'issued'">En attente de paiement</span>
-              <span class="badge-soft danger" *ngIf="bill.status === 'overdue'">En retard</span>
-              <span class="badge-soft info" *ngIf="bill.status === 'partially_paid'">Partiellement payée</span>
-              <span class="badge-soft neutral" *ngIf="!['paid', 'issued', 'overdue', 'partially_paid'].includes(bill.status)">{{bill.status}}</span>
+              <span class="badge-soft success" *ngIf="bill.statut === 'PAYEE'">Payée</span>
+              <span class="badge-soft warning" *ngIf="bill.statut === 'ENVOYEE'">En attente de paiement</span>
+              <span class="badge-soft danger" *ngIf="bill.statut === 'EN_RETARD'">En retard</span>
+              <span class="badge-soft info" *ngIf="bill.statut === 'PARTIELLEMENT_PAYEE'">Partiellement payée</span>
+              <span class="badge-soft neutral" *ngIf="!['PAYEE', 'ENVOYEE', 'EN_RETARD', 'PARTIELLEMENT_PAYEE'].includes(bill.statut)">{{bill.statut}}</span>
             </td>
-            <td>{{bill.issue_date || '—'}}</td>
+            <td>{{bill.dateFacture || '—'}}</td>
             <td>
-              <button class="btn btn-ghost btn-sm" type="button" (click)="detail(bill.facture_id)">
+              <button class="btn btn-ghost btn-sm" type="button" (click)="detail(bill.id)">
                 <span class="material-icons">visibility</span>
                 Détails
               </button>
-              <button class="btn btn-ghost btn-sm" type="button" (click)="downloadInvoice(bill.facture_id)">
+              <button class="btn btn-ghost btn-sm" type="button" (click)="downloadInvoice(bill.id)">
                 <span class="material-icons">download</span>
                 Télécharger
               </button>
@@ -53,28 +53,28 @@
   <div class="card-body">
     <div class="detail-row">
       <span class="detail-label">N° Facture:</span>
-      <span class="detail-value">{{billdetails.facture_id}}</span>
+      <span class="detail-value">{{billdetails.numeroFacture || billdetails.id}}</span>
     </div>
     <div class="detail-row">
       <span class="detail-label">Montant total:</span>
-      <span class="detail-value">{{billdetails.amount | number:'1.2-2'}} €</span>
+      <span class="detail-value">{{billdetails.montantTTC | number:'1.2-2'}} €</span>
     </div>
     <div class="detail-row">
       <span class="detail-label">Statut:</span>
       <span class="detail-value">
-        <span class="badge-soft success" *ngIf="isPaid(billdetails.status)">Payée</span>
-        <span class="badge-soft warning" *ngIf="billdetails.status === 'issued'">En attente de paiement</span>
-        <span class="badge-soft danger" *ngIf="billdetails.status === 'overdue'">En retard</span>
-        <span class="badge-soft info" *ngIf="billdetails.status === 'partially_paid'">Partiellement payée</span>
+        <span class="badge-soft success" *ngIf="billdetails.statut === 'PAYEE'">Payée</span>
+        <span class="badge-soft warning" *ngIf="billdetails.statut === 'ENVOYEE'">En attente de paiement</span>
+        <span class="badge-soft danger" *ngIf="billdetails.statut === 'EN_RETARD'">En retard</span>
+        <span class="badge-soft info" *ngIf="billdetails.statut === 'PARTIELLEMENT_PAYEE'">Partiellement payée</span>
       </span>
     </div>
     <div class="detail-row">
       <span class="detail-label">Date d'émission:</span>
-      <span class="detail-value">{{billdetails.issue_date || '—'}}</span>
+      <span class="detail-value">{{billdetails.dateFacture || '—'}}</span>
     </div>
     <div class="detail-row">
       <span class="detail-label">Date d'échéance:</span>
-      <span class="detail-value">{{billdetails.due_date || '—'}}</span>
+      <span class="detail-value">{{billdetails.dateEcheance || '—'}}</span>
     </div>
 
     <h6 style="margin-top: 2rem; margin-bottom: 1rem;">Détail des lignes:</h6>
@@ -91,9 +91,9 @@
         <tbody>
           <tr *ngFor="let line of billLines">
             <td>{{line.description}}</td>
-            <td>{{line.quantity}}</td>
-            <td>{{line.unit_price | number:'1.2-2'}} €</td>
-            <td>{{line.total | number:'1.2-2'}} €</td>
+            <td>{{line.quantite}}</td>
+            <td>{{line.prixUnitaire | number:'1.2-2'}} €</td>
+            <td>{{line.montant | number:'1.2-2'}} €</td>
           </tr>
         </tbody>
       </table>

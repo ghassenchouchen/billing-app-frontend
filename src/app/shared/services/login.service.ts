@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ApiService } from '../../core/services/api.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoginService {
-  constructor(private api: ApiService) {}
+  constructor(private http: HttpClient) {}
 
   checkUser(username: string, password: string): Observable<any> {
-    return this.api.post('checkuser/', {
+    return this.http.post('/api/auth/login', {
       userName: username,
       password: password
     });

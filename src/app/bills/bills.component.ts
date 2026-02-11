@@ -38,38 +38,24 @@ export class BillsComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  detail(id: string): void {
-    this.billService.getBillDetails(id)
+  detail(id: any): void {
+    this.billService.getBillDetails(String(id))
       .pipe(takeUntil(this.destroy$))
       .subscribe((data) => {
         this.billdetails = data;
-        this.notpaid = !data.paid;
-        this.notcalculated = data.somme_tot === 0;
-
-        this.billService.getBillLines(id)
-          .pipe(takeUntil(this.destroy$))
-          .subscribe((lines) => {
-            this.billLines = lines;
-          });
-
+        this.notpaid = data.statut !== 'PAID';
+        this.notcalculated = data.montantTTC === 0;
+        this.billLines = data.lines || [];
       });
   }
 
-  Calculate(id: string): void {
-    this.calculatingId = id;
-    this.billService.calculateBill(id)
+  Calculate(id: any): void {
+  
+    this.calculatingId = String(id);
+    this.billService.finalizeInvoice(String(id))
       .pipe(takeUntil(this.destroy$))
       .subscribe(data => {
         this.post_sum = data;
-        if (this.billdetails && String(this.billdetails.facture_id) === String(id)) {
-          this.billdetails = data as BillDetails;
-          this.notcalculated = data.somme_tot === 0;
-          this.billService.getBillLines(id)
-            .pipe(takeUntil(this.destroy$))
-            .subscribe((lines) => {
-              this.billLines = lines;
-            });
-        }
         this.patchBill(data);
         this.calculatingId = null;
       });
@@ -83,8 +69,7 @@ export class BillsComponent implements OnInit, OnDestroy {
     const endDate = new Date(this.filterEnd);
     
     this.listofbills = this.allBills.filter(bill => {
-      if (!bill.issue_date) return false;
-      const billDate = new Date(bill.issue_date);
+      const billDate = new Date(bill.dateFacture);
       return billDate >= startDate && billDate <= endDate;
     });
   }
@@ -100,15 +85,16 @@ export class BillsComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const headers = ['facture_id', 'client_id', 'consom_appel', 'consom_sms', 'consom_internet', 'paid', 'somme_tot'];
+    const headers = ['numeroFacture', 'clientId', 'dateFacture', 'dateEcheance', 'montantHT', 'montantTVA', 'montantTTC', 'statut'];
     const rows = this.listofbills.map(bill => [
-      bill.facture_id,
-      bill.client_id,
-      bill.consom_appel,
-      bill.consom_sms,
-      bill.consom_internet,
-      bill.paid ? 'paid' : 'pending',
-      bill.somme_tot
+      bill.numeroFacture,
+      bill.clientId,
+      bill.dateFacture,
+      bill.dateEcheance,
+      bill.montantHT,
+      bill.montantTVA,
+      bill.montantTTC,
+      bill.statut
     ]);
 
     const csv = [headers, ...rows].map(row => row.map(value => `"${String(value ?? '')}"`).join(',')).join('\n');
@@ -126,27 +112,27 @@ export class BillsComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.billService.getBillLines(bill.facture_id)
+    this.billService.getBillDetails(String(bill.id))
       .pipe(takeUntil(this.destroy$))
-      .subscribe((lines) => {
-        const headers = ['facture_id', 'service', 'quantity', 'unit_price', 'amount'];
-        const rows = (lines || []).map(line => [
-          bill.facture_id,
-          line.service_name || line.service_id || '',
-          line.quantity ?? '',
-          line.unit_price ?? '',
-          line.amount ?? ''
+      .subscribe((details) => {
+        const lines = details.lines || [];
+        const headers = ['numeroFacture', 'description', 'quantite', 'prixUnitaire', 'montantHT'];
+        const rows = lines.map(line => [
+          bill.numeroFacture,
+          line.description || '',
+          line.quantite ?? '',
+          line.prixUnitaire ?? '',
+          line.montant ?? ''
         ]);
 
         if (!rows.length) {
           rows.push([
-            bill.facture_id,
-            '',
-            bill.consom_appel ?? '',
-            bill.consom_sms ?? '',
-            bill.consom_internet ?? ''
+            bill.numeroFacture,
+            'Total',
+            '1',
+            bill.montantHT?.toString() ?? '',
+            bill.montantTTC?.toString() ?? ''
           ]);
-          headers.push('consom_appel', 'consom_sms', 'consom_internet');
         }
 
         const csv = [headers, ...rows]
@@ -156,14 +142,14 @@ export class BillsComponent implements OnInit, OnDestroy {
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        link.download = `facture-${bill.facture_id}.csv`;
+        link.download = `facture-${bill.numeroFacture}.csv`;
         link.click();
         window.URL.revokeObjectURL(url);
       });
   }
 
   private patchBill(updated: Bill): void {
-    const index = this.listofbills.findIndex(b => b.facture_id === updated.facture_id);
+    const index = this.listofbills.findIndex(b => b.id === updated.id || b.numeroFacture === updated.numeroFacture);
     if (index >= 0) {
       this.listofbills = this.listofbills.map((bill, idx) => idx === index ? { ...bill, ...updated } : bill);
     }

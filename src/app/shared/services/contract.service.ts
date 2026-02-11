@@ -1,31 +1,50 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ApiService } from '../../core/services/api.service';
 import { Contract } from '../../core/models';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ContractService {
-  constructor(private api: ApiService) {}
+  private baseUrl = '/api/subscriptions';
+
+  constructor(private http: HttpClient) {}
 
   getContracts(): Observable<Contract[]> {
-    return this.api.get<Contract[]>('contratlist/');
+    return this.http.get<Contract[]>(this.baseUrl);
   }
 
-  getContractsByCustomer(customerId: string): Observable<Contract[]> {
-    return this.api.get<Contract[]>(`contratlistbyClient/${customerId}/`);
+  getActiveContracts(): Observable<Contract[]> {
+    return this.http.get<Contract[]>(`${this.baseUrl}/active`);
+  }
+
+  getContractsByCustomer(clientId: string): Observable<Contract[]> {
+    return this.http.get<Contract[]>(`${this.baseUrl}/client/${clientId}`);
   }
 
   getContractDetails(contractId: string): Observable<Contract> {
-    return this.api.get<Contract>(`contratdetail/${contractId}/`);
+    return this.http.get<Contract>(`${this.baseUrl}/${contractId}`);
   }
 
-  deactivateContract(contractId: string): Observable<Contract> {
-    return this.api.put<Contract>(`contract/${contractId}/deactivate`, {});
+  createContract(contract: any): Observable<Contract> {
+    return this.http.post<Contract>(this.baseUrl, contract);
+  }
+
+  activateContract(contractId: string): Observable<Contract> {
+    return this.http.post<Contract>(`${this.baseUrl}/${contractId}/activate`, null);
+  }
+
+  suspendContract(contractId: string): Observable<Contract> {
+    return this.http.post<Contract>(`${this.baseUrl}/${contractId}/suspend`, null);
+  }
+
+  terminateContract(contractId: string): Observable<Contract> {
+    return this.http.post<Contract>(`${this.baseUrl}/${contractId}/terminate`, null);
   }
 
   requestCancellation(contractId: string): Observable<Contract> {
-    return this.api.post<Contract>(`contract/${contractId}/cancel-request`, {});
+    // Maps to terminate for cancellation request
+    return this.http.post<Contract>(`${this.baseUrl}/${contractId}/terminate`, null);
   }
 }

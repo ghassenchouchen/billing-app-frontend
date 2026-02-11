@@ -56,24 +56,27 @@
 					</thead>
 					<tbody>
 						<tr *ngFor="let bill of listofbills">
-							  <td>{{bill.facture_id}}</td>
-							  <td>{{bill.client_name || 'Client #' + bill.client_id}}</td>
-							<td>{{bill.somme_tot | number:'1.2-2'}}</td>
-							<td>{{bill.date || '—'}}</td>
+							  <td>{{bill.numeroFacture || bill.id}}</td>
+							  <td>Client #{{bill.clientId}}</td>
+							<td>{{bill.montantTTC | number:'1.2-2'}}</td>
+							<td>{{bill.dateFacture || '—'}}</td>
 							<td>
-								<span class="badge-soft success" *ngIf="bill.status === 'paid'">Payée</span>
-								<span class="badge-soft info" *ngIf="bill.status === 'partially_paid'">Partiellement payée</span>
-								<span class="badge-soft warning" *ngIf="bill.status !== 'paid' && bill.status !== 'partially_paid'">En attente</span>
+								<span class="badge-soft success" *ngIf="bill.statut === 'PAID'">Payée</span>
+								<span class="badge-soft info" *ngIf="bill.statut === 'SENT'">Envoyée</span>
+								<span class="badge-soft warning" *ngIf="bill.statut === 'DRAFT'">Brouillon</span>
+								<span class="badge-soft warning" *ngIf="bill.statut === 'PENDING'">En attente</span>
+								<span class="badge-soft neutral" *ngIf="bill.statut === 'OVERDUE'">En retard</span>
+								<span class="badge-soft neutral" *ngIf="bill.statut === 'CANCELLED'">Annulée</span>
 							</td>
 							<td class="actions-cell">
-								<button class="btn btn-ghost" type="button" (click)="detail(bill.facture_id)">
+								<button class="btn btn-ghost" type="button" (click)="detail(bill.id)">
 									<span class="material-icons">visibility</span>
 									Voir les détails
 								</button>
 								
-								<button class="btn btn-action" type="button" (click)="Calculate(bill.facture_id)" [disabled]="calculatingId === bill.facture_id">
+								<button class="btn btn-action" type="button" (click)="Calculate(bill.id)" [disabled]="calculatingId === bill.id">
 									<span class="material-icons">calculate</span>
-									{{ calculatingId === bill.facture_id ? 'Recalcul…' : 'Recalculer' }}
+									{{ calculatingId === bill.id ? 'Recalcul…' : 'Recalculer' }}
 								</button>
 								<button class="btn btn-ghost" type="button" (click)="exportBill(bill)">
 									<span class="material-icons">download</span>
@@ -93,26 +96,32 @@
 		</div>
 		<div class="card-body bill-details">
 			<div>
-				<strong>Facture:</strong> #{{billdetails.facture_id}}
+				<strong>Facture:</strong> #{{billdetails.numeroFacture || billdetails.id}}
 			</div>
 			<div>
-				<strong>Client:</strong> {{billdetails.client_name || 'Client #' + billdetails.client_id}}
+				<strong>Client:</strong> Client #{{billdetails.clientId}}
 			</div>
 			<div>
-				<strong>Consommation:</strong>
-				{{billdetails.consom_appel}} appel / {{billdetails.consom_sms}} SMS / {{billdetails.consom_internet}} internet
-			</div>
-			<div *ngIf="billdetails.total_paid !== undefined">
-				<strong>Total payé:</strong> {{billdetails.total_paid | number:'1.2-2'}}
-			</div>
-			<div *ngIf="billdetails.balance_due !== undefined">
-				<strong>Reste à payer:</strong> {{billdetails.balance_due | number:'1.2-2'}}
-			</div>
-			<div *ngIf="billdetails.status">
-				<strong>Statut:</strong> {{billdetails.status}}
+				<strong>Période:</strong>
+				{{billdetails.periodeDebut || '—'}} au {{billdetails.periodeFin || '—'}}
 			</div>
 			<div>
-				<strong>Montant:</strong> {{billdetails.somme_tot | number:'1.2-2'}}
+				<strong>Montant HT:</strong> {{billdetails.montantHT | number:'1.2-2'}}
+			</div>
+			<div>
+				<strong>TVA:</strong> {{billdetails.montantTVA | number:'1.2-2'}}
+			</div>
+			<div>
+				<strong>Montant TTC:</strong> {{billdetails.montantTTC | number:'1.2-2'}}
+			</div>
+			<div>
+				<strong>Statut:</strong> {{billdetails.statut}}
+			</div>
+			<div>
+				<strong>Date facture:</strong> {{billdetails.dateFacture || '—'}}
+			</div>
+			<div>
+				<strong>Date échéance:</strong> {{billdetails.dateEcheance || '—'}}
 			</div>
 			<div class="bill-lines" *ngIf="billLines.length">
 				<h6 class="bill-lines-title">Lignes de facture</h6>
@@ -128,10 +137,10 @@
 						</thead>
 						<tbody>
 							<tr *ngFor="let line of billLines">
-								<td>{{line.service_name || line.service_id || '—'}}</td>
-								<td>{{line.quantity}}</td>
-								<td>{{line.unit_price | number:'1.2-2'}}</td>
-								<td>{{line.amount | number:'1.2-2'}}</td>
+								<td>{{line.description || '—'}}</td>
+								<td>{{line.quantite}}</td>
+								<td>{{line.prixUnitaire | number:'1.2-2'}}</td>
+								<td>{{line.montant | number:'1.2-2'}}</td>
 							</tr>
 						</tbody>
 					</table>

@@ -1,12 +1,20 @@
+
 export interface Customer {
-  client_id: string;
+  customerRef: string;
   nom: string;
   prenom: string;
-  adresse: string;
   email: string;
-  type: string;
   telephone?: string;
-  date_creation?: Date;
+  adresse: string;
+  ville?: string;
+  codePostal?: string;
+  pays?: string;
+  type: string;
+  status?: string;
+  paymentType?: string;
+  accountBalance?: number;
+  creditLimit?: number;
+  createdAt?: string;
 }
 
 export interface CustomerDetails extends Customer {
@@ -14,64 +22,115 @@ export interface CustomerDetails extends Customer {
   bills?: Bill[];
 }
 
+// Matches ContratDto (subscription-service)
 export interface Contract {
-  contract_id: string;
-  customer_id?: string;
-  customer_name?: string;
-  type?: string;
-  start_date?: string;
-  end_date?: string;
-  status?: 'active' | 'inactive' | 'suspended' | 'cancel_requested' | string;
+  id: number;
+  clientId: number;
+  offreId: number;
+  dateDebut?: string;
+  dateFin?: string;
+  status?: string;
+  createdAt?: string;
 }
 
+// Matches ServiceDto (catalog-service)
+// Backend returns: id, code, libelle, unite, prixUnitaire, category, active
 export interface Service {
-  service_id: string;
-  name: string;
-  type: string;
-  price: number;
-  status?: string;  included_quantity?: number;}
-
-export interface Offer {
-  offre_id: string;
-  name: string;
-  description: string;
-  price: number;
-  status?: string;
+  id: number;
+  code: string;
+  libelle: string;
+  unite: string;
+  prixUnitaire: number;
+  category?: string;
+  active: boolean;
+  // Aliases used by templates
+  nom?: string;
+  description?: string;
+  typeService?: string;
+  uniteFacturation?: string;
+  included_quantity?: number;
 }
 
-export interface Bill {
-  facture_id: string;
-  client_id: string;
-  consom_appel: number;
-  consom_sms: number;
-  consom_internet: number;
-  paid: boolean;
-  somme_tot: number;
-  total_paid?: number;
-  balance_due?: number;
-  period_start?: string;
-  period_end?: string;
-  issue_date?: string;
-  due_date?: string;
-  paid_date?: string;
+// Matches OffreDto (catalog-service)
+// Backend returns: id, code, libelle, description, prixMensuel, dateDebut, dateFin, status, serviceIds
+export interface Offer {
+  id: number;
+  code: string;
+  libelle: string;
+  description?: string;
+  prixMensuel: number;
+  dateDebut?: string;
+  dateFin?: string;
   status?: string;
-  date_facture?: Date;
-  date_echeance?: Date;
+  serviceIds?: number[];
+  // Aliases used by templates
+  nom?: string;
+  prixBase?: number;
+  active?: boolean;
+}
+
+// Matches FactureDto (billing-service)
+export interface Bill {
+  id: number;
+  numeroFacture: string;
+  clientId: number;
+  contratId?: number;
+  dateFacture: string;
+  dateEcheance: string;
+  periodeDebut?: string;
+  periodeFin?: string;
+  montantHT: number;
+  montantTVA: number;
+  montantTTC: number;
+  statut: string;
+  nombreLignes?: number;
+  createdAt?: string;
+  paidAt?: string;
 }
 
 export interface BillDetails extends Bill {
   customer?: Customer;
-  isPaid: boolean;
-  isCalculated: boolean;
+  lines?: InvoiceLine[];
 }
 
+// Matches InvoiceLine entity (billing-service)
+// Backend returns: id, type, description, serviceId, usageId, quantite, prixUnitaire, montant
 export interface InvoiceLine {
-  line_id: string;
-  facture_id: string;
-  service_id?: string;
-  service_name?: string;
-  quantity: number;
-  unit_price: number;
-  amount: number;
-  description?: string;
+  id: number;
+  factureId?: number;
+  type?: string;
+  description: string;
+  serviceId?: number;
+  usageId?: number;
+  quantite: number;
+  prixUnitaire: number;
+  montant: number;
+  montantHT?: number;
+}
+
+// Matches PaymentDto (payment-service)
+export interface Payment {
+  id: number;
+  reference: string;
+  clientId: number;
+  factureId: number;
+  montant: number;
+  methodePaiement: string;
+  statut: string;
+  transactionId?: string;
+  errorMessage?: string;
+  createdAt?: string;
+  processedAt?: string;
+}
+
+// Matches UsageRecordDto (usage-service)
+export interface UsageRecord {
+  id: number;
+  contratId: number;
+  serviceId: number;
+  quantite: number;
+  prixUnitaire: number;
+  montantTotal: number;
+  dateUsage: string;
+  rated: boolean;
 }

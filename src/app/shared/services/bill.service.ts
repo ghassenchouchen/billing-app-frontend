@@ -1,39 +1,71 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { ApiService } from '../../core/services/api.service';
+import { HttpClient } from '@angular/common/http';
+import { Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { Bill, BillDetails, InvoiceLine } from '../../core/models';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BillService {
-  constructor(private api: ApiService) {}
+  private baseUrl = '/api/invoices';
+
+  constructor(private http: HttpClient) {}
 
   getBills(): Observable<Bill[]> {
-    return this.api.get<Bill[]>('facturelist/');
+    return this.http.get<Bill[]>(this.baseUrl);
   }
 
-  getBillsByCustomer(customerId: string): Observable<Bill[]> {
-    return this.api.get<Bill[]>(`facturelistbyCustomer/${customerId}/`);
+  getBillsByCustomer(clientId: string): Observable<Bill[]> {
+    return this.http.get<Bill[]>(`${this.baseUrl}/client/${clientId}`);
   }
 
   getBillDetails(billId: string): Observable<BillDetails> {
-    return this.api.get<BillDetails>(`facturedetail/${billId}/`);
+    return this.http.get<BillDetails>(`${this.baseUrl}/${billId}`);
+  }
+
+  getBillByNumber(numeroFacture: string): Observable<BillDetails> {
+    return this.http.get<BillDetails>(`${this.baseUrl}/number/${numeroFacture}`);
   }
 
   getBillLines(billId: string): Observable<InvoiceLine[]> {
-    return this.api.get<InvoiceLine[]>(`facturelines/${billId}/`);
+    // Get lines from bill details
+    return this.getBillDetails(billId).pipe(
+      map(details => details.lines || [])
+    );
   }
 
-  calculateBill(billId: string): Observable<any> {
-    const body = { title: 'Angular PUT Request calcul' };
-    return this.api.put(`sommefacturebyfactureID/${billId}/`, body);
+  getUnpaidBills(clientId: string): Observable<Bill[]> {
+    return this.http.get<Bill[]>(`${this.baseUrl}/client/${clientId}/unpaid`);
   }
 
-  runBilling(periodStart: string, periodEnd: string): Observable<Bill[]> {
-    return this.api.post<Bill[]>('billing/run', {
-      period_start: periodStart,
-      period_end: periodEnd
+  getOutstandingBalance(clientId: string): Observable<number> {
+    return this.http.get<number>(`${this.baseUrl}/client/${clientId}/balance`);
+  }
+
+  getBillsByStatus(status: string): Observable<Bill[]> {
+    return this.http.get<Bill[]>(`${this.baseUrl}/status/${status}`);
+  }
+
+  generateInvoice(contratId: number, periodeDebut: string, periodeFin: string): Observable<Bill> {
+    return this.http.post<Bill>(`${this.baseUrl}/generate`, {
+      contratId,
+      periodeDebut,
+      periodeFin
+    });
+  }
+
+  finalizeInvoice(billId: string): Observable<Bill> {
+    return this.http.post<Bill>(`${this.baseUrl}/${billId}/finalize`, null);
+  }
+
+  sendInvoice(billId: string): Observable<Bill> {
+    return this.http.post<Bill>(`${this.baseUrl}/${billId}/send`, null);
+  }
+
+  markAsPaid(billId: string, paymentRef: string): Observable<Bill> {
+    return this.http.post<Bill>(`${this.baseUrl}/${billId}/pay`, null, {
+      params: { paymentRef }
     });
   }
 }

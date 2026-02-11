@@ -25,19 +25,19 @@
 				<h6>{{ formMode === 'create' ? 'Nouvelle offre' : 'Modifier l\'offre' }}</h6>
 				<div class="form-group">
 					<label>Nom de l'offre</label>
-					<input class="form-control" type="text" [(ngModel)]="formData.name" />
+					<input class="form-control" type="text" [(ngModel)]="formData.libelle" />
 				</div>
 				<div class="form-group">
 					<label>Service</label>
-					<select class="form-control" [(ngModel)]="formData.service_id">
+					<select class="form-control" [(ngModel)]="formData.serviceId">
 						<option value="">-- Sélectionnez un service --</option>
-						<option *ngFor="let service of availableServices" [value]="service.service_id">
-							{{ service.name }} ({{ service.price | number:'1.2-2' }})
+						<option *ngFor="let service of availableServices" [value]="service.id">
+							{{ service.libelle || service.nom || service.code }} ({{ service.prixUnitaire | number:'1.2-2' }})
 						</option>
 					</select>
 				</div>
 				<div class="form-actions">
-					<button class="btn btn-action primary" type="button" (click)="saveOffer()" [disabled]="saving || !formData.name || !formData.service_id">
+					<button class="btn btn-action primary" type="button" (click)="saveOffer()" [disabled]="saving || !formData.libelle || !formData.serviceId">
 						{{ saving ? 'Sauvegarde…' : 'Sauvegarder' }}
 					</button>
 					<button class="btn btn-ghost" type="button" (click)="closeForm()" [disabled]="saving">
@@ -59,20 +59,20 @@
 					</thead>
 					<tbody>
 						<tr *ngFor="let offer of listofoffers">
-							<td>{{offer.offer_id}}</td>
-							<td>{{offer.name}}</td>
-							<td>{{offer.description}}</td>
-							<td>{{offer.price | number:'1.2-2'}}</td>
+							<td>{{offer.id}}</td>
+							<td>{{offer.libelle || offer.nom || offer.code}}</td>
+							<td>{{offer.description || '—'}}</td>
+							<td>{{offer.prixMensuel | number:'1.2-2'}}</td>
 							<td>
-								<span class="badge-soft success" *ngIf="offer.status === 'active'">Active</span>
-								<span class="badge-soft neutral" *ngIf="offer.status !== 'active'">Inactive</span>
+								<span class="badge-soft success" *ngIf="offer.status === 'ACTIVE'">Active</span>
+								<span class="badge-soft neutral" *ngIf="offer.status !== 'ACTIVE'">{{offer.status || 'Inactive'}}</span>
 							</td>
 							<td class="actions-cell">
 								<button class="btn btn-ghost" type="button" (click)="openEditForm(offer)">
 									<span class="material-icons">edit</span>
 									Modifier
 								</button>
-								<button class="btn btn-ghost" type="button" (click)="deleteOffer(offer.offer_id)">
+								<button class="btn btn-ghost" type="button" (click)="deleteOffer(offer.id)">
 									<span class="material-icons">delete</span>
 									Supprimer
 								</button>

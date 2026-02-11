@@ -16,7 +16,7 @@ export class OffersComponent implements OnInit, OnDestroy {
   availableServices: Service[] = [];
   showForm = false;
   formMode: 'create' | 'edit' = 'create';
-  formData = { name: '', service_id: '' };
+  formData = { libelle: '', serviceId: '' };
   saving = false;
   showConfirmModal = false;
   confirmModalConfig = {
@@ -64,25 +64,25 @@ export class OffersComponent implements OnInit, OnDestroy {
 
   openCreateForm(): void {
     this.formMode = 'create';
-    this.formData = { name: '', service_id: '' };
+    this.formData = { libelle: '', serviceId: '' };
     this.showForm = true;
   }
 
-  openEditForm(offer: Offer): void {
+  openEditForm(offer: any): void {
     this.formMode = 'edit';
-    this.formData = { name: offer.name, service_id: '' };
+    this.formData = { libelle: offer.libelle || offer.nom || offer.code || '', serviceId: '' };
     this.offersdetails = offer;
     this.showForm = true;
   }
 
   saveOffer(): void {
-    if (!this.formData.name || !this.formData.service_id) {
+    if (!this.formData.libelle || !this.formData.serviceId) {
       return;
     }
     this.saving = true;
     const request = {
-      offre_parent: this.formData.name,
-      service_id: this.formData.service_id
+      libelle: this.formData.libelle,
+      serviceIds: [parseInt(this.formData.serviceId, 10)]
     };
     if (this.formMode === 'create') {
       this.offersService.createOffer(request)
@@ -98,7 +98,7 @@ export class OffersComponent implements OnInit, OnDestroy {
           }
         });
     } else if (this.offersdetails) {
-      this.offersService.updateOffer(this.offersdetails.offre_id, request)
+      this.offersService.updateOffer(String(this.offersdetails.id), request)
         .pipe(takeUntil(this.destroy$))
         .subscribe({
           next: () => {
@@ -113,11 +113,11 @@ export class OffersComponent implements OnInit, OnDestroy {
     }
   }
 
-  deleteOffer(id: string): void {
+  deleteOffer(id: any): void {
     this.confirmModalConfig = {
       title: 'Supprimer l\'offre',
       message: 'Êtes-vous sûr de vouloir supprimer cette offre ? Cette action est irréversible.',
-      action: () => this.confirmDelete(id)
+      action: () => this.confirmDelete(String(id))
     };
     this.showConfirmModal = true;
   }
@@ -137,7 +137,7 @@ export class OffersComponent implements OnInit, OnDestroy {
 
   closeForm(): void {
     this.showForm = false;
-    this.formData = { name: '', service_id: '' };
+    this.formData = { libelle: '', serviceId: '' };
     this.offersdetails = null;
   }
 }

@@ -8,7 +8,7 @@
         <thead>
           <tr>
             <th>ID Contrat</th>
-            <th>Type de service</th>
+            <th>Offre</th>
             <th>Date début</th>
             <th>Date fin</th>
             <th>Statut</th>
@@ -17,18 +17,18 @@
         </thead>
         <tbody>
           <tr *ngFor="let contract of listofContracts">
-            <td>{{contract.contract_id | slice:0:8}}...</td>
-            <td>{{contract.type}}</td>
-            <td>{{contract.start_date || '—'}}</td>
-            <td>{{contract.end_date || '—'}}</td>
+            <td>{{contract.id}}</td>
+            <td>Offre #{{contract.offreId}}</td>
+            <td>{{contract.dateDebut || '—'}}</td>
+            <td>{{contract.dateFin || '—'}}</td>
             <td>
-              <span class="badge-soft success" *ngIf="contract.status === 'active'">Actif</span>
-              <span class="badge-soft info" *ngIf="contract.status === 'suspended'">Suspendu</span>
-              <span class="badge-soft warning" *ngIf="contract.status === 'cancel_requested'">Annulation demandée</span>
-              <span class="badge-soft neutral" *ngIf="contract.status !== 'active' && contract.status !== 'suspended' && contract.status !== 'cancel_requested'">Inactif</span>
+              <span class="badge-soft success" *ngIf="contract.status === 'ACTIVE'">Actif</span>
+              <span class="badge-soft info" *ngIf="contract.status === 'SUSPENDED'">Suspendu</span>
+              <span class="badge-soft warning" *ngIf="contract.status === 'PENDING'">En attente</span>
+              <span class="badge-soft neutral" *ngIf="contract.status !== 'ACTIVE' && contract.status !== 'SUSPENDED' && contract.status !== 'PENDING'">{{contract.status || 'Inactif'}}</span>
             </td>
             <td>
-              <button class="btn btn-ghost btn-sm" type="button" (click)="detail(contract.contract_id)">
+              <button class="btn btn-ghost btn-sm" type="button" (click)="detail(contract.id)">
                 <span class="material-icons">visibility</span>
                 Détails
               </button>
@@ -36,9 +36,9 @@
                 class="btn btn-action btn-sm" 
                 type="button" 
                 (click)="requestCancellation(contract)"
-                [disabled]="contract.status === 'cancel_requested' || contract.status === 'inactive' || cancellationRequestingId === contract.contract_id">
+                [disabled]="contract.status === 'TERMINATED' || contract.status === 'PENDING' || cancellationRequestingId === contract.id">
                 <span class="material-icons">close</span>
-                {{ cancellationRequestingId === contract.contract_id ? 'Demande en cours…' : 'Demander annulation' }}
+                {{ cancellationRequestingId === contract.id ? 'Demande en cours…' : 'Demander annulation' }}
               </button>
             </td>
           </tr>
@@ -58,27 +58,27 @@
   <div class="card-body">
     <div class="detail-row">
       <span class="detail-label">ID Contrat:</span>
-      <span class="detail-value">{{contractdetails.contract_id}}</span>
+      <span class="detail-value">{{contractdetails.id}}</span>
     </div>
     <div class="detail-row">
-      <span class="detail-label">Type de service:</span>
-      <span class="detail-value">{{contractdetails.type}}</span>
+      <span class="detail-label">Offre:</span>
+      <span class="detail-value">Offre #{{contractdetails.offreId}}</span>
     </div>
     <div class="detail-row">
       <span class="detail-label">Date de début:</span>
-      <span class="detail-value">{{contractdetails.start_date || '—'}}</span>
+      <span class="detail-value">{{contractdetails.dateDebut || '—'}}</span>
     </div>
     <div class="detail-row">
       <span class="detail-label">Date de fin:</span>
-      <span class="detail-value">{{contractdetails.end_date || '—'}}</span>
+      <span class="detail-value">{{contractdetails.dateFin || '—'}}</span>
     </div>
     <div class="detail-row">
       <span class="detail-label">Statut:</span>
       <span class="detail-value">
-        <span class="badge-soft success" *ngIf="contractdetails.status === 'active'">Actif</span>
-        <span class="badge-soft info" *ngIf="contractdetails.status === 'suspended'">Suspendu</span>
-        <span class="badge-soft warning" *ngIf="contractdetails.status === 'cancel_requested'">Annulation demandée</span>
-        <span class="badge-soft neutral" *ngIf="contractdetails.status !== 'active' && contractdetails.status !== 'suspended' && contractdetails.status !== 'cancel_requested'">Inactif</span>
+        <span class="badge-soft success" *ngIf="contractdetails.status === 'ACTIVE'">Actif</span>
+        <span class="badge-soft info" *ngIf="contractdetails.status === 'SUSPENDED'">Suspendu</span>
+        <span class="badge-soft warning" *ngIf="contractdetails.status === 'PENDING'">En attente</span>
+        <span class="badge-soft neutral" *ngIf="contractdetails.status !== 'ACTIVE' && contractdetails.status !== 'SUSPENDED' && contractdetails.status !== 'PENDING'">{{contractdetails.status || 'Inactif'}}</span>
       </span>
     </div>
   </div>

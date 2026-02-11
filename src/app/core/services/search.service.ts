@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { forkJoin, Observable, of } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
-import { ApiService } from './api.service';
+import { map, tap, catchError } from 'rxjs/operators';
 
 export interface SearchResult {
   label: string;
@@ -24,7 +24,7 @@ export class SearchService {
   private services: any[] | null = null;
   private offers: any[] | null = null;
 
-  constructor(private api: ApiService) {}
+  constructor(private http: HttpClient) {}
 
   search(term: string): Observable<SearchSection[]> {
     const query = (term || '').trim().toLowerCase();
@@ -48,10 +48,10 @@ export class SearchService {
         }
 
         const billResults = (this.bills || [])
-          .filter((b) => this.match(query, `facture ${b.facture_id} client ${b.client_id} ${b.paid ? 'payee' : 'attente'}`))
+          .filter((b) => this.match(query, `facture ${b.numeroFacture} ${b.id} client ${b.clientId} ${b.statut}`))
           .map((b) => ({
-            label: `Facture #${b.facture_id}`,
-            sublabel: `Client ${b.client_id} · ${b.paid ? 'Payée' : 'En attente'}`,
+            label: `Facture #${b.numeroFacture || b.id}`,
+            sublabel: `Client #${b.clientId} · ${b.statut || 'En attente'}`,
             route: '/Bills'
           }));
         if (billResults.length) {
@@ -59,10 +59,10 @@ export class SearchService {
         }
 
         const contractResults = (this.contracts || [])
-          .filter((c) => this.match(query, `${c.contract_id} ${c.customer_name} ${c.type} ${c.status}`))
+          .filter((c) => this.match(query, `${c.id} contrat client ${c.clientId} offre ${c.offreId} ${c.status}`))
           .map((c) => ({
-            label: `Contrat #${c.contract_id}`,
-            sublabel: `${c.customer_name || 'Client'} · ${c.status || 'active'}`,
+            label: `Contrat #${c.id}`,
+            sublabel: `Client #${c.clientId} · ${c.status || 'ACTIVE'}`,
             route: '/Contracts'
           }));
         if (contractResults.length) {
@@ -70,10 +70,10 @@ export class SearchService {
         }
 
         const serviceResults = (this.services || [])
-          .filter((s) => this.match(query, `${s.name} ${s.type} ${s.status}`))
+          .filter((s) => this.match(query, `${s.libelle} ${s.code} ${s.unite} ${s.category}`))
           .map((s) => ({
-            label: `${s.name}`,
-            sublabel: `${s.type || ''}`.trim(),
+            label: `${s.libelle || s.code}`,
+            sublabel: `${s.unite || ''} · ${s.active ? 'Actif' : 'Inactif'}`,
             route: '/Services'
           }));
         if (serviceResults.length) {
@@ -81,10 +81,10 @@ export class SearchService {
         }
 
         const offerResults = (this.offers || [])
-          .filter((o) => this.match(query, `${o.name} ${o.description} ${o.status}`))
+          .filter((o) => this.match(query, `${o.libelle} ${o.code} ${o.description} ${o.status}`))
           .map((o) => ({
-            label: `${o.name}`,
-            sublabel: `${o.description || ''}`.trim(),
+            label: `${o.libelle || o.code}`,
+            sublabel: `${o.description || ''} · ${o.status || ''}`.trim(),
             route: '/Offers'
           }));
         if (offerResults.length) {
@@ -97,21 +97,36 @@ export class SearchService {
   }
 
   private ensureData(): Observable<void> {
-    const requests: any[] = [];
+    const requests: Observable<any>[] = [];
     if (!this.clients) {
-      requests.push(this.api.get<any[]>('clientlist/').pipe(tap((data) => (this.clients = data))));
+      requests.push(this.http.get<any[]>('/api/customers').pipe(
+        tap((data) => (this.clients = data)),
+        catchError(() => { this.clients = []; return of([]); })
+      ));
     }
     if (!this.bills) {
-      requests.push(this.api.get<any[]>('facturelist/').pipe(tap((data) => (this.bills = data))));
+      requests.push(this.http.get<any[]>('/api/invoices').pipe(
+        tap((data) => (this.bills = data)),
+        catchError(() => { this.bills = []; return of([]); })
+      ));
     }
     if (!this.contracts) {
-      requests.push(this.api.get<any[]>('contratlist/').pipe(tap((data) => (this.contracts = data))));
+      requests.push(this.http.get<any[]>('/api/subscriptions').pipe(
+        tap((data) => (this.contracts = data)),
+        catchError(() => { this.contracts = []; return of([]); })
+      ));
     }
     if (!this.services) {
-      requests.push(this.api.get<any[]>('servicelist/').pipe(tap((data) => (this.services = data))));
+      requests.push(this.http.get<any[]>('/api/services').pipe(
+        tap((data) => (this.services = data)),
+        catchError(() => { this.services = []; return of([]); })
+      ));
     }
     if (!this.offers) {
-      requests.push(this.api.get<any[]>('offrelist/').pipe(tap((data) => (this.offers = data))));
+      requests.push(this.http.get<any[]>('/api/offres').pipe(
+        tap((data) => (this.offers = data)),
+        catchError(() => { this.offers = []; return of([]); })
+      ));
     }
 
     if (!requests.length) {

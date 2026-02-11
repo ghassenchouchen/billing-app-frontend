@@ -12,7 +12,7 @@ import { Customer, CustomerDetails } from '../core/models';
 export class CustomersComponent implements OnInit, OnDestroy {
   listOfCustomer: Customer[] = [];
   customerdetails: CustomerDetails | null = null;
-  displayedColumns: string[] = ['client_id', 'nom', 'prenom', 'adresse', 'email', 'type', 'actions'];
+  displayedColumns: string[] = ['customerRef', 'nom', 'prenom', 'adresse', 'email', 'type', 'actions'];
   private destroy$ = new Subject<void>();
 
   constructor(private customerService: CustomerService) {}

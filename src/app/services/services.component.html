@@ -24,12 +24,16 @@
 			<div *ngIf="showForm" class="form-section">
 				<h6>{{ formMode === 'create' ? 'Nouveau service' : 'Modifier le service' }}</h6>
 				<div class="form-group">
+					<label>Code</label>
+					<input class="form-control" type="text" [(ngModel)]="formData.code" placeholder="Ex: SVC_DATA_01" />
+				</div>
+				<div class="form-group">
 					<label>Nom du service</label>
-					<input class="form-control" type="text" [(ngModel)]="formData.designation" />
+					<input class="form-control" type="text" [(ngModel)]="formData.libelle" />
 				</div>
 				<div class="form-group">
 					<label>Prix unitaire</label>
-					<input class="form-control" type="number" [(ngModel)]="formData.prix_unite" step="0.01" />
+					<input class="form-control" type="number" [(ngModel)]="formData.prixUnitaire" step="0.01" />
 				</div>
 				<div class="form-group">
 					<label>Unité</label>
@@ -40,20 +44,17 @@
 					</select>
 				</div>
 				<div class="form-group">
-					<label>
-						<span *ngIf="formData.unite === 'SMS'">Nombre de messages inclus</span>
-						<span *ngIf="formData.unite === 'SECONDE'">Nombre de secondes/minutes inclus</span>
-						<span *ngIf="formData.unite === 'OCTET'">Quantité de données incluse (en octets)</span>
-					</label>
-					<input class="form-control" type="number" [(ngModel)]="formData.included_quantity" step="1" min="0" />
-					<small class="form-text text-muted">
-						<span *ngIf="formData.unite === 'SMS'">Ex: 100 messages</span>
-						<span *ngIf="formData.unite === 'SECONDE'">Ex: 3600 secondes = 60 minutes</span>
-						<span *ngIf="formData.unite === 'OCTET'">Ex: 1073741824 octets = 1 GB</span>
-					</small>
+					<label>Catégorie</label>
+					<select class="form-control" [(ngModel)]="formData.category">
+						<option value="VOICE">Voix</option>
+						<option value="DATA">Données</option>
+						<option value="SMS">SMS</option>
+						<option value="ROAMING">Roaming</option>
+						<option value="VALUE_ADDED">Valeur ajoutée</option>
+					</select>
 				</div>
 				<div class="form-actions">
-					<button class="btn btn-action primary" type="button" (click)="saveService()" [disabled]="saving || !formData.designation">
+					<button class="btn btn-action primary" type="button" (click)="saveService()" [disabled]="saving || !formData.libelle">
 						{{ saving ? 'Sauvegarde…' : 'Sauvegarder' }}
 					</button>
 					<button class="btn btn-ghost" type="button" (click)="closeForm()" [disabled]="saving">
@@ -75,20 +76,20 @@
 					</thead>
 					<tbody>
 						<tr *ngFor="let service of listofServices">
-							<td>{{service.service_id}}</td>
-							<td>{{service.name}}</td>
-							<td>{{service.type}}</td>
-							<td>{{service.price | number:'1.2-2'}}</td>
+							<td>{{service.id}}</td>
+							<td>{{service.libelle || service.code}}</td>
+							<td>{{service.unite}}</td>
+							<td>{{service.prixUnitaire | number:'1.2-2'}}</td>
 							<td>
-								<span class="badge-soft success" *ngIf="service.status === 'active'">Actif</span>
-								<span class="badge-soft neutral" *ngIf="service.status !== 'active'">Inactif</span>
+								<span class="badge-soft success" *ngIf="service.active">Actif</span>
+								<span class="badge-soft neutral" *ngIf="!service.active">Inactif</span>
 							</td>
 							<td class="actions-cell">
 								<button class="btn btn-ghost" type="button" (click)="openEditForm(service)">
 									<span class="material-icons">edit</span>
 									Modifier
 								</button>
-								<button class="btn btn-ghost" type="button" (click)="deleteService(service.service_id)">
+								<button class="btn btn-ghost" type="button" (click)="deleteService(service.id)">
 									<span class="material-icons">delete</span>
 									Supprimer
 								</button>

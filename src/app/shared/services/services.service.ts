@@ -1,31 +1,41 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ApiService } from '../../core/services/api.service';
 import { Service } from '../../core/models';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ServicesService {
-  constructor(private api: ApiService) {}
+  private baseUrl = '/api/services';
+
+  constructor(private http: HttpClient) {}
 
   getServices(): Observable<Service[]> {
-    return this.api.get<Service[]>('servicelist/');
+    return this.http.get<Service[]>(this.baseUrl);
+  }
+
+  getActiveServices(): Observable<Service[]> {
+    return this.http.get<Service[]>(`${this.baseUrl}/active`);
   }
 
   getServiceDetails(serviceId: string): Observable<Service> {
-    return this.api.get<Service>(`servicedetail/${serviceId}/`);
+    return this.http.get<Service>(`${this.baseUrl}/${serviceId}`);
+  }
+
+  getServiceByCode(code: string): Observable<Service> {
+    return this.http.get<Service>(`${this.baseUrl}/code/${code}`);
   }
 
   createService(request: any): Observable<Service> {
-    return this.api.post<Service>('service', request);
+    return this.http.post<Service>(this.baseUrl, request);
   }
 
   updateService(serviceId: string, request: any): Observable<Service> {
-    return this.api.put<Service>(`service/${serviceId}`, request);
+    return this.http.put<Service>(`${this.baseUrl}/${serviceId}`, request);
   }
 
   deleteService(serviceId: string): Observable<void> {
-    return this.api.delete<void>(`service/${serviceId}`);
+    return this.http.delete<void>(`${this.baseUrl}/${serviceId}`);
   }
 }

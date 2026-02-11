@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
-import { ApiService } from './api.service';
+import { tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 
 export interface LoginResponse {
@@ -9,6 +9,16 @@ export interface LoginResponse {
   userName: boolean;
   password: boolean;
   token?: string;
+  refreshToken?: string;
+  role?: string;
+  customerId?: string;
+  customerName?: string;
+}
+
+export interface RefreshResponse {
+  token: string;
+  refreshToken: string;
+  role: string;
 }
 
 @Injectable({
@@ -16,6 +26,7 @@ export interface LoginResponse {
 })
 export class AuthService {
   private readonly TOKEN_KEY = 'auth_token';
+  private readonly REFRESH_TOKEN_KEY = 'refresh_token';
   private readonly USER_KEY = 'current_user';
   private readonly ROLE_KEY = 'user_role';
   private readonly CUSTOMER_ID_KEY = 'customer_id';
@@ -25,22 +36,27 @@ export class AuthService {
   isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
   userRole$ = this.userRoleSubject.asObservable();
 
-  constructor(private api: ApiService, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
   login(username: string, password: string, isCustomer: boolean = false): Observable<LoginResponse> {
-    return this.api.post<LoginResponse>('checkuser', {
+    return this.http.post<LoginResponse>('/api/auth/login', {
       userName: username,
       password: password
     }).pipe(
       tap(response => {
         if (response.login) {
-          this.setToken(response.token || 'temp-token');
+          this.setToken(response.token || '');
+          if (response.refreshToken) {
+            this.setRefreshToken(response.refreshToken);
+          }
           this.setUser(username);
-          localStorage.setItem('userName', username); 
-          const role = isCustomer ? 'customer' : 'admin';
+          localStorage.setItem('userName', username);
+          const role = (response.role as 'admin' | 'customer') || (isCustomer ? 'customer' : 'admin');
           this.setRole(role);
-          if (isCustomer) {
-            this.setCustomerId(username); 
+          if (response.customerId) {
+            this.setCustomerId(response.customerId);
+          } else if (isCustomer) {
+            this.setCustomerId(username);
           }
           this.isAuthenticatedSubject.next(true);
           this.userRoleSubject.next(role);
@@ -49,8 +65,27 @@ export class AuthService {
     );
   }
 
+  /**
+   * Refresh the access token using the stored refresh token.
+   * Called automatically by the AuthInterceptor on 401 responses.
+   */
+  refreshAccessToken(): Observable<RefreshResponse> {
+    const refreshToken = this.getRefreshToken();
+    return this.http.post<RefreshResponse>('/api/auth/refresh', {}, {
+      headers: { Authorization: `Bearer ${refreshToken}` }
+    }).pipe(
+      tap(response => {
+        this.setToken(response.token);
+        if (response.refreshToken) {
+          this.setRefreshToken(response.refreshToken);
+        }
+      })
+    );
+  }
+
   logout(): void {
     localStorage.removeItem(this.TOKEN_KEY);
+    localStorage.removeItem(this.REFRESH_TOKEN_KEY);
     localStorage.removeItem(this.USER_KEY);
     localStorage.removeItem(this.ROLE_KEY);
     localStorage.removeItem(this.CUSTOMER_ID_KEY);
@@ -66,6 +101,10 @@ export class AuthService {
 
   getToken(): string | null {
     return localStorage.getItem(this.TOKEN_KEY);
+  }
+
+  getRefreshToken(): string | null {
+    return localStorage.getItem(this.REFRESH_TOKEN_KEY);
   }
 
   getCurrentUser(): string | null {
@@ -94,6 +133,10 @@ export class AuthService {
 
   private setToken(token: string): void {
     localStorage.setItem(this.TOKEN_KEY, token);
+  }
+
+  private setRefreshToken(token: string): void {
+    localStorage.setItem(this.REFRESH_TOKEN_KEY, token);
   }
 
   private setUser(username: string): void {

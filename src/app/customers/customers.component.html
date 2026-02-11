@@ -19,27 +19,29 @@
         <table class="table table-striped table-hover">
           <thead>
             <tr>
-              <th>ID Client</th>
+              <th>Référence</th>
               <th>Nom</th>
               <th>Prénom</th>
-              <th>Adresse</th>
               <th>Email</th>
+              <th>Ville</th>
               <th>Type</th>
+              <th>Statut</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let customer of listOfCustomer">
-              <td>{{customer.client_id}}</td>
+              <td><code>{{customer.customerRef | slice:0:8}}...</code></td>
               <td>{{customer.nom}}</td>
               <td>{{customer.prenom}}</td>
-              <td>{{customer.adresse}}</td>
               <td>{{customer.email}}</td>
-              <td>{{customer.type}}</td>
+              <td>{{customer.ville || '-'}}</td>
+              <td><span class="badge-soft">{{customer.type}}</span></td>
+              <td><span class="badge-soft" [class.success]="customer.status === 'ACTIVE'">{{customer.status}}</span></td>
               <td>
-                <button class="btn btn-ghost" type="button" (click)="detail(customer.client_id)">
+                <button class="btn btn-ghost" type="button" (click)="detail(customer.customerRef)">
                   <span class="material-icons">visibility</span>
-                  Voir les détails
+                  Détails
                 </button>
               </td>
             </tr>
@@ -57,7 +59,7 @@
         </div>
         <div>
           <div class="details-name">{{customerdetails.prenom}} {{customerdetails.nom}}</div>
-          <div class="details-subtitle">Client #{{customerdetails.client_id}}</div>
+          <div class="details-subtitle">Réf: {{customerdetails.customerRef | slice:0:8}}...</div>
         </div>
       </div>
       <span class="badge-soft neutral">{{customerdetails.type}}</span>
@@ -69,12 +71,24 @@
           <div class="detail-value">{{customerdetails.email}}</div>
         </div>
         <div class="detail-card">
-          <div class="detail-label">Adresse</div>
-          <div class="detail-value">{{customerdetails.adresse}}</div>
+          <div class="detail-label">Téléphone</div>
+          <div class="detail-value">{{customerdetails.telephone || '-'}}</div>
         </div>
         <div class="detail-card">
-          <div class="detail-label">Type de client</div>
-          <div class="detail-value">{{customerdetails.type}}</div>
+          <div class="detail-label">Adresse</div>
+          <div class="detail-value">{{customerdetails.adresse}}, {{customerdetails.ville}} {{customerdetails.codePostal}}</div>
+        </div>
+        <div class="detail-card">
+          <div class="detail-label">Type de paiement</div>
+          <div class="detail-value">{{customerdetails.paymentType}}</div>
+        </div>
+        <div class="detail-card">
+          <div class="detail-label">Solde du compte</div>
+          <div class="detail-value">{{customerdetails.accountBalance | number:'1.2-2'}} TND</div>
+        </div>
+        <div class="detail-card">
+          <div class="detail-label">Limite de crédit</div>
+          <div class="detail-value">{{customerdetails.creditLimit | number:'1.2-2'}} TND</div>
         </div>
       </div>
     </div>

@@ -32,18 +32,18 @@
               <td>
                 <input 
                   type="checkbox" 
-                  [checked]="selectedBills.has(bill.facture_id)"
-                  (change)="toggleBillSelection(bill.facture_id, bill.amount)" />
+                  [checked]="selectedBills.has('' + bill.id)"
+                  (change)="toggleBillSelection('' + bill.id, bill.montantTTC)" />
               </td>
-              <td>{{bill.facture_id}}</td>
-              <td class="amount">{{bill.amount | number:'1.2-2'}} €</td>
+              <td>{{bill.numeroFacture || bill.id}}</td>
+              <td class="amount">{{bill.montantTTC | number:'1.2-2'}} €</td>
               <td>
-                <span [ngClass]="'badge-soft ' + getStatusBadgeClass(bill.status)">
-                  {{ bill.status === 'pending' ? 'En attente' : 'Impayée' }}
+                <span [ngClass]="'badge-soft ' + getStatusBadgeClass(bill.statut)">
+                  {{ bill.statut === 'ENVOYEE' ? 'Émise' : bill.statut === 'EN_RETARD' ? 'En retard' : bill.statut === 'FINALISEE' ? 'Finalisée' : bill.statut }}
                 </span>
               </td>
-              <td>{{bill.issue_date || '—'}}</td>
-              <td>{{bill.due_date || '—'}}</td>
+              <td>{{bill.dateFacture || '—'}}</td>
+              <td>{{bill.dateEcheance || '—'}}</td>
             </tr>
           </tbody>
         </table>
@@ -92,9 +92,9 @@
         </thead>
         <tbody>
           <tr *ngFor="let payment of paymentHistory">
-            <td>{{payment.date}}</td>
-            <td>{{payment.transaction_id}}</td>
-            <td>{{payment.amount | number:'1.2-2'}} €</td>
+            <td>{{payment.datePaiement}}</td>
+            <td>{{payment.reference}}</td>
+            <td>{{payment.montant | number:'1.2-2'}} €</td>
             <td>
               <span class="badge-soft success">Confirmé</span>
             </td>

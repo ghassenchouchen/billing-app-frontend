@@ -14,7 +14,7 @@ export class ServicesComponent implements OnInit, OnDestroy {
   servicedetails: Service | null = null;
   showForm = false;
   formMode: 'create' | 'edit' = 'create';
-  formData = { designation: '', prix_unite: 0, unite: 'OCTET', included_quantity: 0 };
+  formData = { code: '', libelle: '', prixUnitaire: 0, unite: 'OCTET', category: 'DATA' };
   saving = false;
   showConfirmModal = false;
   confirmModalConfig = {
@@ -53,32 +53,34 @@ export class ServicesComponent implements OnInit, OnDestroy {
 
   openCreateForm(): void {
     this.formMode = 'create';
-    this.formData = { designation: '', prix_unite: 0, unite: 'OCTET', included_quantity: 0 };
+    this.formData = { code: '', libelle: '', prixUnitaire: 0, unite: 'OCTET', category: 'DATA' };
     this.showForm = true;
   }
 
-  openEditForm(service: Service): void {
+  openEditForm(service: any): void {
     this.formMode = 'edit';
     this.formData = {
-      designation: service.name,
-      prix_unite: service.price,
-      unite: service.type.toUpperCase(),
-      included_quantity: service.included_quantity || 0
+      code: service.code || '',
+      libelle: service.libelle || '',
+      prixUnitaire: service.prixUnitaire || 0,
+      unite: (service.unite || 'OCTET').toUpperCase(),
+      category: service.category || 'DATA'
     };
     this.servicedetails = service;
     this.showForm = true;
   }
 
   saveService(): void {
-    if (!this.formData.designation) {
+    if (!this.formData.libelle) {
       return;
     }
     this.saving = true;
     const request = {
-      designation: this.formData.designation,
-      prix_unite: this.formData.prix_unite,
+      code: this.formData.code,
+      libelle: this.formData.libelle,
       unite: this.formData.unite,
-      included_quantity: this.formData.included_quantity
+      prixUnitaire: this.formData.prixUnitaire,
+      category: this.formData.category
     };
     if (this.formMode === 'create') {
       this.serviceService.createService(request)
@@ -94,7 +96,7 @@ export class ServicesComponent implements OnInit, OnDestroy {
           }
         });
     } else if (this.servicedetails) {
-      this.serviceService.updateService(this.servicedetails.service_id, request)
+      this.serviceService.updateService(String(this.servicedetails.id), request)
         .pipe(takeUntil(this.destroy$))
         .subscribe({
           next: () => {
@@ -109,11 +111,11 @@ export class ServicesComponent implements OnInit, OnDestroy {
     }
   }
 
-  deleteService(id: string): void {
+  deleteService(id: any): void {
     this.confirmModalConfig = {
       title: 'Supprimer le service',
       message: 'Êtes-vous sûr de vouloir supprimer ce service ? Cette action est irréversible.',
-      action: () => this.confirmDelete(id)
+      action: () => this.confirmDelete(String(id))
     };
     this.showConfirmModal = true;
   }
@@ -133,7 +135,7 @@ export class ServicesComponent implements OnInit, OnDestroy {
 
   closeForm(): void {
     this.showForm = false;
-    this.formData = { designation: '', prix_unite: 0, unite: 'OCTET', included_quantity: 0 };
+    this.formData = { code: '', libelle: '', prixUnitaire: 0, unite: 'OCTET', category: 'DATA' };
     this.servicedetails = null;
   }
 }

@@ -44,11 +44,11 @@ export class ContractsComponent implements OnInit, OnDestroy {
       });
   }
 
-  deactivate(id: string): void {
+  deactivate(id: any): void {
     this.confirmModalConfig = {
-      title: 'Désactiver le contrat',
-      message: 'Êtes-vous sûr de vouloir désactiver ce contrat ? Cette action peut avoir des conséquences sur la facturation.',
-      action: () => this.confirmDeactivate(id)
+      title: 'Suspendre le contrat',
+      message: 'Êtes-vous sûr de vouloir suspendre ce contrat ? Cette action peut avoir des conséquences sur la facturation.',
+      action: () => this.confirmDeactivate(String(id))
     };
     this.showConfirmModal = true;
   }
@@ -56,11 +56,11 @@ export class ContractsComponent implements OnInit, OnDestroy {
   confirmDeactivate(id: string): void {
     this.showConfirmModal = false;
     this.deactivatingId = id;
-    this.contractService.deactivateContract(id)
+    this.contractService.suspendContract(id)
       .pipe(takeUntil(this.destroy$))
       .subscribe((data) => {
         this.patchContract(data);
-        if (this.contractdetails && this.contractdetails.contract_id === id) {
+        if (this.contractdetails && String(this.contractdetails.id) === id) {
           this.contractdetails = data;
         }
         this.deactivatingId = null;
@@ -72,7 +72,7 @@ export class ContractsComponent implements OnInit, OnDestroy {
   }
 
   private patchContract(updated: Contract): void {
-    const index = this.listofContracts.findIndex(c => c.contract_id === updated.contract_id);
+    const index = this.listofContracts.findIndex(c => c.id === updated.id);
     if (index >= 0) {
       this.listofContracts = this.listofContracts.map((contract, idx) => idx === index ? { ...contract, ...updated } : contract);
     }

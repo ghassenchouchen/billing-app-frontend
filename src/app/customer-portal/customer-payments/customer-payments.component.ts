@@ -38,10 +38,10 @@ export class CustomerPaymentsComponent implements OnInit, OnDestroy {
     this.billService.getBills()
       .pipe(takeUntil(this.destroy$))
       .subscribe((data) => {
-        // Filter unpaid bills for this customer (ISSUED and OVERDUE)
+        // Filter unpaid bills for this customer (ENVOYEE and EN_RETARD)
         this.pendingBills = data.filter(b => 
-          b.client_id === this.customerId && 
-          (b.status === 'issued' || b.status === 'overdue')
+          String(b.clientId) === String(this.customerId) && 
+          (b.statut === 'ENVOYEE' || b.statut === 'EN_RETARD' || b.statut === 'FINALISEE')
         );
       });
   }
@@ -68,8 +68,8 @@ export class CustomerPaymentsComponent implements OnInit, OnDestroy {
     this.selectedBills.clear();
     this.totalAmount = 0;
     this.pendingBills.forEach(bill => {
-      this.selectedBills.add(bill.facture_id);
-      this.totalAmount += bill.amount;
+      this.selectedBills.add(String(bill.id));
+      this.totalAmount += bill.montantTTC;
     });
   }
 
@@ -106,13 +106,14 @@ export class CustomerPaymentsComponent implements OnInit, OnDestroy {
 
   getStatusBadgeClass(status: string): string {
     switch (status) {
-      case 'issued':
+      case 'ENVOYEE':
+      case 'FINALISEE':
         return 'warning';
-      case 'overdue':
+      case 'EN_RETARD':
         return 'danger';
-      case 'paid':
+      case 'PAYEE':
         return 'success';
-      case 'partially_paid':
+      case 'PARTIELLEMENT_PAYEE':
         return 'info';
       default:
         return 'neutral';

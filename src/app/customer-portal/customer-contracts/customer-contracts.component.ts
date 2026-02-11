@@ -43,12 +43,12 @@ export class CustomerContractsComponent implements OnInit, OnDestroy {
       });
   }
 
-  detail(id: string): void {
-    this.contractService.getContractDetails(id)
+  detail(id: any): void {
+    this.contractService.getContractDetails(String(id))
       .pipe(takeUntil(this.destroy$))
       .subscribe((data) => {
         // Only show if it's the customer's contract
-        if (data.customer_id === this.customerId) {
+        if (String(data.clientId) === String(this.customerId)) {
           this.contractdetails = data;
         }
       });
@@ -64,18 +64,18 @@ export class CustomerContractsComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.cancellationRequestingId = this.selectedContractForCancellation.contract_id;
-    this.contractService.requestCancellation(this.selectedContractForCancellation.contract_id)
+    this.cancellationRequestingId = String(this.selectedContractForCancellation.id);
+    this.contractService.requestCancellation(String(this.selectedContractForCancellation.id))
       .pipe(takeUntil(this.destroy$))
       .subscribe((data) => {
         // Update the contract status
-        const index = this.listofContracts.findIndex(c => c.contract_id === data.contract_id);
+        const index = this.listofContracts.findIndex(c => c.id === data.id);
         if (index >= 0) {
           this.listofContracts = this.listofContracts.map((contract, idx) => 
             idx === index ? { ...contract, ...data } : contract
           );
         }
-        if (this.contractdetails && this.contractdetails.contract_id === data.contract_id) {
+        if (this.contractdetails && this.contractdetails.id === data.id) {
           this.contractdetails = data;
         }
         this.closeCancellationForm();

@@ -1,31 +1,37 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ApiService } from '../../core/services/api.service';
 import { Offer } from '../../core/models';
 
 @Injectable({
   providedIn: 'root'
 })
 export class OffersService {
-  constructor(private api: ApiService) {}
+  private baseUrl = '/api/offres';
+
+  constructor(private http: HttpClient) {}
 
   getOffers(): Observable<Offer[]> {
-    return this.api.get<Offer[]>('offrelist/');
+    return this.http.get<Offer[]>(this.baseUrl);
+  }
+
+  getActiveOffers(): Observable<Offer[]> {
+    return this.http.get<Offer[]>(`${this.baseUrl}/active`);
   }
 
   getOfferDetails(offerId: string): Observable<Offer> {
-    return this.api.get<Offer>(`offredetail/${offerId}/`);
+    return this.http.get<Offer>(`${this.baseUrl}/${offerId}`);
   }
 
   createOffer(request: any): Observable<Offer> {
-    return this.api.post<Offer>('offer', request);
+    return this.http.post<Offer>(this.baseUrl, request);
   }
 
   updateOffer(offerId: string, request: any): Observable<Offer> {
-    return this.api.put<Offer>(`offer/${offerId}`, request);
+    return this.http.put<Offer>(`${this.baseUrl}/${offerId}`, request);
   }
 
   deleteOffer(offerId: string): Observable<void> {
-    return this.api.delete<void>(`offer/${offerId}`);
+    return this.http.delete<void>(`${this.baseUrl}/${offerId}`);
   }
 }

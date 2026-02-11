@@ -41,14 +41,13 @@ export class CustomerBillsComponent implements OnInit, OnDestroy {
       });
   }
 
-  detail(id: string): void {
-    this.billService.getBillDetails(id)
+  detail(id: any): void {
+    this.billService.getBillDetails(String(id))
       .pipe(takeUntil(this.destroy$))
       .subscribe((data) => {
-        // Only show if it's the customer's bill
-        if (data.client_id === this.customerId) {
+        if (String(data.clientId) === this.customerId) {
           this.billdetails = data;
-          this.loadBillLines(id);
+          this.billLines = data.lines || [];
         }
       });
   }
@@ -62,7 +61,7 @@ export class CustomerBillsComponent implements OnInit, OnDestroy {
   }
 
   isPaid(status: string): boolean {
-    return status === 'paid' || status === 'completed';
+    return status === 'PAYEE';
   }
 
   downloadInvoice(billId: string): void {
