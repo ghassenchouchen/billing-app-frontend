@@ -4,11 +4,11 @@
 
 <ng-template #mainLayout>
   <div class="app-shell">
-    <aside class="app-sidebar" *ngIf="userRole === 'admin'">
+    <aside class="app-sidebar" *ngIf="userRole">
       <div class="brand">
         <div class="brand-icon">TB</div>
         <div>
-          <div class="brand-title">Facturation Télécom</div>
+          <div class="brand-title"> Management Dashboard</div>
           <div class="brand-subtitle">Suite Opérations</div>
         </div>
       </div>
@@ -22,9 +22,9 @@
           <span class="material-icons">receipt_long</span>
           Factures
         </a>
-        <a class="nav-item" routerLink="/Contracts" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+        <a class="nav-item" routerLink="/Abonnements" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
           <span class="material-icons">description</span>
-          Contrats
+          Abonnements
         </a>
         <a class="nav-item" routerLink="/Services" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
           <span class="material-icons">settings</span>
@@ -37,15 +37,13 @@
       </nav>
     </aside>
 
-    <div class="app-main" [class.customer-portal]="userRole === 'customer'">
+    <div class="app-main">
       <header class="app-topbar">
         <div class="topbar-left">
-          <div class="topbar-title" *ngIf="userRole === 'admin'">Tableau de bord de facturation</div>
-          <div class="topbar-title" *ngIf="userRole === 'customer'">Mon Espace Client</div>
-          <div class="topbar-subtitle" *ngIf="userRole === 'admin'">Gestion unifiée de la facturation télécom</div>
-          <div class="topbar-subtitle" *ngIf="userRole === 'customer'">Gérez vos contrats, factures et paiements</div>
+          <div class="topbar-title">Tableau de bord </div>
+          <div class="topbar-subtitle">Gestion unifiée des services télécom</div>
         </div>
-        <div class="topbar-actions" *ngIf="userRole === 'admin'">
+        <div class="topbar-actions">
           <div class="search-wrapper" (keydown.escape)="closeSearch()">
             <div class="search-pill">
               <span class="material-icons">search</span>
@@ -80,7 +78,7 @@
           </div>
           <div class="user-pill">
             <span class="material-icons">account_circle</span>
-            Administrateur
+            <!--{{ userFullName }} — --> {{ userRoleLabel }}
           </div>
           <button class="btn btn-logout" type="button" (click)="logout()">
             <span class="material-icons">logout</span>

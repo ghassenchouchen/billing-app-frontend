@@ -2,7 +2,7 @@
   <div class="page-header">
     <div>
       <h2 class="page-title">Mon Espace Client</h2>
-      <p class="page-subtitle">Gérez vos contrats, factures et paiements</p>
+      <p class="page-subtitle">Gérez vos abonnements, factures et paiements</p>
     </div>
     <div class="header-actions">
       <button class="btn btn-sm" (click)="logout()">
@@ -32,10 +32,10 @@
     <div class="tabs-nav">
       <button 
         class="tab-button" 
-        [class.active]="activeTab === 'contracts'"
-        (click)="setActiveTab('contracts')">
+        [class.active]="activeTab === 'abonnements'"
+        (click)="setActiveTab('abonnements')">
         <span class="material-icons">assignment</span>
-        Mes contrats
+        Mes abonnements
       </button>
       <button 
         class="tab-button" 
@@ -54,9 +54,9 @@
     </div>
 
     <div class="tabs-content">
-      <!-- Contracts Tab -->
-      <div class="tab-pane" *ngIf="activeTab === 'contracts'">
-        <app-customer-contracts [customerId]="currentCustomerId"></app-customer-contracts>
+      <!-- Abonnements Tab -->
+      <div class="tab-pane" *ngIf="activeTab === 'abonnements'">
+        <app-customer-abonnements [customerId]="currentCustomerId"></app-customer-abonnements>
       </div>
 
       <!-- Bills Tab -->

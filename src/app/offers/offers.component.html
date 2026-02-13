@@ -53,6 +53,7 @@
 							  <th>Nom de l'offre</th>
 							  <th>Description</th>
 							  <th>Prix</th>
+							  <th>Type de paiement</th>
 							  <th>Statut</th>
 							  <th>Actions</th>
 						</tr>
@@ -63,6 +64,9 @@
 							<td>{{offer.libelle || offer.nom || offer.code}}</td>
 							<td>{{offer.description || '—'}}</td>
 							<td>{{offer.prixMensuel | number:'1.2-2'}}</td>
+							<td>
+								<span class="badge-soft" [class.info]="offer.paymentType === 'PREPAID'" [class.neutral]="offer.paymentType !== 'PREPAID'">{{offer.paymentType || 'POSTPAID'}}</span>
+							</td>
 							<td>
 								<span class="badge-soft success" *ngIf="offer.status === 'ACTIVE'">Active</span>
 								<span class="badge-soft neutral" *ngIf="offer.status !== 'ACTIVE'">{{offer.status || 'Inactive'}}</span>

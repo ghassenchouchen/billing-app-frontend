@@ -11,12 +11,9 @@ import { AuthService } from '../core/services/auth.service';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit, OnDestroy {
-  notcorrect1: boolean = false;
-  notcorrect2: boolean = false;
-  loginError: string = '';
   errorMessage: string = '';
   returnUrl: string = '';
-  isCustomerLogin: boolean = false;
+  isLoading: boolean = false;
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -26,8 +23,12 @@ export class LoginComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    // Get return url from route parameters or default to '/Customers' or '/Portal'
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/Customers';
+
+    // Redirect if already logged in
+    if (this.authService.isLoggedIn()) {
+      this.router.navigate([this.returnUrl]);
+    }
   }
 
   ngOnDestroy(): void {
@@ -36,51 +37,38 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   onSubmit(form: NgForm): void {
-    if (!form) {
+    if (!form || form.invalid) {
+      if (form) form.form.markAllAsTouched();
+      this.errorMessage = 'Veuillez saisir votre nom d\'utilisateur et mot de passe.';
       return;
     }
 
-    if (form.invalid) {
-      form.form.markAllAsTouched();
-      this.errorMessage = 'Please provide both username and password.';
-      return;
-    }
-
-    this.verify(form);
-  }
-
-  verify(f: NgForm): void {
-    this.loginError = '';
     this.errorMessage = '';
-    this.notcorrect1 = false;
-    this.notcorrect2 = false;
+    this.isLoading = true;
 
-    const username = (f.value.username || '').trim();
-    const password = f.value.password || '';
+    const username = (form.value.username || '').trim();
+    const password = form.value.password || '';
 
-    if (!username || !password) {
-      this.errorMessage = 'Please provide both username and password.';
-      return;
-    }
-
-    this.authService.login(username, password, this.isCustomerLogin)
+    this.authService.login(username, password)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
-          if (response.login) {
-            const redirectUrl = this.isCustomerLogin ? '/Portal' : (this.returnUrl || '/Customers');
-            this.router.navigate([redirectUrl]);
+          this.isLoading = false;
+          if (response.success) {
+            this.router.navigate([this.returnUrl || '/Customers']);
           } else {
-            this.notcorrect1 = !response.userName;
-            this.notcorrect2 = !response.password;
-            this.loginError = 'Invalid username or password';
-            this.errorMessage = 'Invalid username or password';
+            this.errorMessage = response.message || 'Identifiants incorrects.';
           }
         },
         error: (error) => {
-          console.error('Login error:', error);
-          this.loginError = 'An error occurred during login. Please try again.';
-          this.errorMessage = 'An error occurred during login. Please try again.';
+          this.isLoading = false;
+          if (error.status === 401) {
+            this.errorMessage = error.error?.message || 'Identifiants incorrects.';
+          } else if (error.status === 423) {
+            this.errorMessage = 'Compte verrouillé. Réessayez dans quelques minutes.';
+          } else {
+            this.errorMessage = 'Erreur de connexion. Veuillez réessayer.';
+          }
         }
       });
   }

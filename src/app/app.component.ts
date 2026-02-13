@@ -3,7 +3,7 @@ import { NavigationEnd, Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { filter, takeUntil } from 'rxjs/operators';
-import { AuthService } from './core/services/auth.service';
+import { AuthService, UserRole } from './core/services/auth.service';
 import { SearchSection, SearchService } from './core/services/search.service';
 
 @Component({
@@ -13,11 +13,12 @@ import { SearchSection, SearchService } from './core/services/search.service';
 })
 export class AppComponent implements OnInit, OnDestroy {
   isLoginRoute = false;
-  isCustomerPortal = false;
   searchTerm = '';
   searchOpen = false;
   searchSections: SearchSection[] = [];
-  userRole: 'admin' | 'customer' | null = null;
+  userRole: UserRole | null = null;
+  userFullName = '';
+  userRoleLabel = '';
   private search$ = new Subject<string>();
   private destroy$ = new Subject<void>();
 
@@ -26,6 +27,8 @@ export class AppComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.authService.userRole$.pipe(takeUntil(this.destroy$)).subscribe(role => {
       this.userRole = role;
+      this.userFullName = this.authService.getFullName();
+      this.userRoleLabel = this.authService.getRoleLabel();
     });
     
     this.evaluateRoute(this.router.url);
@@ -74,7 +77,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
   private evaluateRoute(currentUrl: string): void {
     this.isLoginRoute = currentUrl.toLowerCase().includes('/login');
-    this.isCustomerPortal = currentUrl.toLowerCase().includes('/portal');
   }
 }
 

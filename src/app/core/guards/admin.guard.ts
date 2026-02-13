@@ -17,8 +17,7 @@ export class AdminGuard implements CanActivate {
       return true;
     }
     
-    // If customer tries to access admin route, redirect to portal
-    this.router.navigate(['/Portal']);
+    this.router.navigate(['/Customers']);
     return false;
   }
 }

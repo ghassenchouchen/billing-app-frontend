@@ -75,10 +75,6 @@
   flex-direction: column;
 }
 
-.app-main.customer-portal {
-  background: linear-gradient(180deg, #f0f9ff 0%, #f8fafc 60%, #ffffff 100%);
-}
-
 .app-topbar {
   padding: 20px 32px;
   display: flex;

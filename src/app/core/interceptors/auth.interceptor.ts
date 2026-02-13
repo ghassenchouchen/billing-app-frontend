@@ -55,8 +55,12 @@ export class AuthInterceptor implements HttpInterceptor {
       return this.authService.refreshAccessToken().pipe(
         switchMap(response => {
           this.isRefreshing = false;
-          this.refreshTokenSubject.next(response.token);
-          return next.handle(this.addToken(request, response.token));
+          if (response.success && response.token) {
+            this.refreshTokenSubject.next(response.token);
+            return next.handle(this.addToken(request, response.token));
+          }
+          this.authService.logout();
+          return throwError(() => new HttpErrorResponse({ status: 401 }));
         }),
         catchError(err => {
           this.isRefreshing = false;
@@ -83,6 +87,6 @@ export class AuthInterceptor implements HttpInterceptor {
   private isAuthRequest(url: string): boolean {
     return url.includes('/api/auth/login') ||
            url.includes('/api/auth/refresh') ||
-           url.includes('/api/auth/register');
+           url.includes('/api/auth/logout');
   }
 }

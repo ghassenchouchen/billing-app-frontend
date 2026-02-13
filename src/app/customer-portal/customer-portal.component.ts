@@ -7,7 +7,7 @@ import { AuthService } from '../core/services/auth.service';
   styleUrls: ['./customer-portal.component.css']
 })
 export class CustomerPortalComponent implements OnInit {
-  activeTab: string = 'contracts';
+  activeTab: string = 'abonnements';
   currentCustomerId: string | null = null;
   userName: string = '';
   accountStatus: string = 'Actif';

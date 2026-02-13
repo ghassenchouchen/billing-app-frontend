@@ -1,0 +1,66 @@
+<div class="page">
+  <div class="page-header">
+    <div>
+      <h2 class="page-title">Abonnements</h2>
+      <p class="page-subtitle">Suivez les abonnements actifs et leurs statuts.</p>
+    </div>
+    <div class="page-actions">
+      <span class="chip">{{listofAbonnements.length || 0}} abonnements</span>
+      <span class="chip secondary">Liste active</span>
+    </div>
+  </div>
+
+  <div class="card section-card data-table">
+    <div class="card-header">
+      <h5 class="card-title mb-0">Liste des abonnements</h5>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-striped table-hover">
+          <thead>
+            <tr>
+              <th>ID Abonnement</th>
+              <th>Client</th>
+              <th>Offre</th>
+              <th>Date début</th>
+              <th>Date fin</th>
+              <th>Statut</th>
+                <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let abonnement of listofAbonnements">
+              <td>{{abonnement.id}}</td>
+              <td>Client #{{abonnement.clientId}}</td>
+              <td>Offre #{{abonnement.offreId}}</td>
+              <td>{{abonnement.dateDebut || '—'}}</td>
+              <td>{{abonnement.dateFin || '—'}}</td>
+              <td>
+                <span class="badge-soft success" *ngIf="abonnement.status === 'ACTIVE'">Actif</span>
+                <span class="badge-soft info" *ngIf="abonnement.status === 'SUSPENDED'">Suspendu</span>
+                <span class="badge-soft warning" *ngIf="abonnement.status === 'PENDING'">En attente</span>
+                <span class="badge-soft neutral" *ngIf="abonnement.status !== 'ACTIVE' && abonnement.status !== 'SUSPENDED' && abonnement.status !== 'PENDING'">{{abonnement.status || 'Inactif'}}</span>
+              </td>
+              <td class="actions-cell">
+                <button class="btn btn-ghost danger" type="button" (click)="deactivate(abonnement.id)" [disabled]="abonnement.status === 'TERMINATED' || deactivatingId === abonnement.id">
+                  <span class="material-icons">block</span>
+                  {{ deactivatingId === abonnement.id ? 'Désactivation…' : 'Désactiver' }}
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-confirm-modal
+  [show]="showConfirmModal"
+  [title]="confirmModalConfig.title"
+  [message]="confirmModalConfig.message"
+  confirmText="Désactiver"
+  confirmClass="danger"
+  (confirmed)="confirmModalConfig.action && confirmModalConfig.action()"
+  (cancelled)="cancelConfirm()">
+</app-confirm-modal>

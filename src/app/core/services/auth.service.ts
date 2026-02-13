@@ -4,21 +4,18 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 
-export interface LoginResponse {
-  login: boolean;
-  userName: boolean;
-  password: boolean;
-  token?: string;
-  refreshToken?: string;
-  role?: string;
-  customerId?: string;
-  customerName?: string;
-}
+export type UserRole = 'ADMIN' | 'RESPONSABLE_BOUTIQUE' | 'AGENT_COMMERCIAL';
 
-export interface RefreshResponse {
-  token: string;
-  refreshToken: string;
-  role: string;
+export interface LoginResponse {
+  success: boolean;
+  token: string | null;
+  refreshToken: string | null;
+  role: UserRole | null;
+  username: string | null;
+  firstName: string | null;
+  lastName: string | null;
+  boutiqueId: number | null;
+  message: string | null;
 }
 
 @Injectable({
@@ -27,39 +24,38 @@ export interface RefreshResponse {
 export class AuthService {
   private readonly TOKEN_KEY = 'auth_token';
   private readonly REFRESH_TOKEN_KEY = 'refresh_token';
-  private readonly USER_KEY = 'current_user';
+  private readonly USERNAME_KEY = 'username';
   private readonly ROLE_KEY = 'user_role';
-  private readonly CUSTOMER_ID_KEY = 'customer_id';
+  private readonly FIRST_NAME_KEY = 'first_name';
+  private readonly LAST_NAME_KEY = 'last_name';
+  private readonly BOUTIQUE_ID_KEY = 'boutique_id';
+
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(this.hasToken());
-  private userRoleSubject = new BehaviorSubject<'admin' | 'customer' | null>(this.getStoredRole());
+  private userRoleSubject = new BehaviorSubject<UserRole | null>(this.getStoredRole());
 
   isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
   userRole$ = this.userRoleSubject.asObservable();
 
   constructor(private http: HttpClient, private router: Router) {}
 
-  login(username: string, password: string, isCustomer: boolean = false): Observable<LoginResponse> {
+  login(username: string, password: string): Observable<LoginResponse> {
     return this.http.post<LoginResponse>('/api/auth/login', {
-      userName: username,
-      password: password
+      username,
+      password
     }).pipe(
       tap(response => {
-        if (response.login) {
-          this.setToken(response.token || '');
-          if (response.refreshToken) {
-            this.setRefreshToken(response.refreshToken);
-          }
-          this.setUser(username);
-          localStorage.setItem('userName', username);
-          const role = (response.role as 'admin' | 'customer') || (isCustomer ? 'customer' : 'admin');
-          this.setRole(role);
-          if (response.customerId) {
-            this.setCustomerId(response.customerId);
-          } else if (isCustomer) {
-            this.setCustomerId(username);
+        if (response.success) {
+          localStorage.setItem(this.TOKEN_KEY, response.token || '');
+          localStorage.setItem(this.REFRESH_TOKEN_KEY, response.refreshToken || '');
+          localStorage.setItem(this.USERNAME_KEY, response.username || '');
+          localStorage.setItem(this.ROLE_KEY, response.role || '');
+          localStorage.setItem(this.FIRST_NAME_KEY, response.firstName || '');
+          localStorage.setItem(this.LAST_NAME_KEY, response.lastName || '');
+          if (response.boutiqueId) {
+            localStorage.setItem(this.BOUTIQUE_ID_KEY, response.boutiqueId.toString());
           }
           this.isAuthenticatedSubject.next(true);
-          this.userRoleSubject.next(role);
+          this.userRoleSubject.next(response.role);
         }
       })
     );
@@ -69,27 +65,29 @@ export class AuthService {
    * Refresh the access token using the stored refresh token.
    * Called automatically by the AuthInterceptor on 401 responses.
    */
-  refreshAccessToken(): Observable<RefreshResponse> {
+  refreshAccessToken(): Observable<LoginResponse> {
     const refreshToken = this.getRefreshToken();
-    return this.http.post<RefreshResponse>('/api/auth/refresh', {}, {
+    return this.http.post<LoginResponse>('/api/auth/refresh', {}, {
       headers: { Authorization: `Bearer ${refreshToken}` }
     }).pipe(
       tap(response => {
-        this.setToken(response.token);
-        if (response.refreshToken) {
-          this.setRefreshToken(response.refreshToken);
+        if (response.success) {
+          localStorage.setItem(this.TOKEN_KEY, response.token || '');
+          localStorage.setItem(this.REFRESH_TOKEN_KEY, response.refreshToken || '');
         }
       })
     );
   }
 
   logout(): void {
-    localStorage.removeItem(this.TOKEN_KEY);
-    localStorage.removeItem(this.REFRESH_TOKEN_KEY);
-    localStorage.removeItem(this.USER_KEY);
-    localStorage.removeItem(this.ROLE_KEY);
-    localStorage.removeItem(this.CUSTOMER_ID_KEY);
-    localStorage.removeItem('userName');
+    const token = this.getToken();
+    if (token) {
+      this.http.post('/api/auth/logout', {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      }).subscribe({ error: () => {} });
+    }
+
+    this.clearStorage();
     this.isAuthenticatedSubject.next(false);
     this.userRoleSubject.next(null);
     this.router.navigate(['/Login']);
@@ -107,48 +105,70 @@ export class AuthService {
     return localStorage.getItem(this.REFRESH_TOKEN_KEY);
   }
 
-  getCurrentUser(): string | null {
-    return localStorage.getItem(this.USER_KEY);
+  getUsername(): string | null {
+    return localStorage.getItem(this.USERNAME_KEY);
   }
 
-  getUserRole(): 'admin' | 'customer' | null {
-    return (localStorage.getItem(this.ROLE_KEY) as 'admin' | 'customer') || null;
+  getFullName(): string {
+    const first = localStorage.getItem(this.FIRST_NAME_KEY) || '';
+    const last = localStorage.getItem(this.LAST_NAME_KEY) || '';
+    return `${first} ${last}`.trim() || this.getUsername() || '';
+  }
+
+  getUserRole(): UserRole | null {
+    return localStorage.getItem(this.ROLE_KEY) as UserRole | null;
+  }
+
+  getBoutiqueId(): string | null {
+    return localStorage.getItem(this.BOUTIQUE_ID_KEY);
   }
 
   isAdmin(): boolean {
-    return this.getUserRole() === 'admin';
+    return this.getUserRole() === 'ADMIN';
   }
 
-  isCustomer(): boolean {
-    return this.getUserRole() === 'customer';
+  isResponsableBoutique(): boolean {
+    return this.getUserRole() === 'RESPONSABLE_BOUTIQUE';
   }
 
-  getCustomerId(): string | null {
-    return localStorage.getItem(this.CUSTOMER_ID_KEY);
+  isAgentCommercial(): boolean {
+    return this.getUserRole() === 'AGENT_COMMERCIAL';
   }
 
-  private getStoredRole(): 'admin' | 'customer' | null {
-    return (localStorage.getItem(this.ROLE_KEY) as 'admin' | 'customer') || null;
+  /** Check if user has at least the given role level */
+  hasMinRole(minRole: UserRole): boolean {
+    const hierarchy: Record<UserRole, number> = {
+      'AGENT_COMMERCIAL': 1,
+      'RESPONSABLE_BOUTIQUE': 2,
+      'ADMIN': 3
+    };
+    const current = this.getUserRole();
+    if (!current) return false;
+    return hierarchy[current] >= hierarchy[minRole];
   }
 
-  private setToken(token: string): void {
-    localStorage.setItem(this.TOKEN_KEY, token);
+  getRoleLabel(): string {
+    const labels: Record<UserRole, string> = {
+      'ADMIN': 'Administrateur',
+      'RESPONSABLE_BOUTIQUE': 'Responsable Boutique',
+      'AGENT_COMMERCIAL': 'Agent Commercial'
+    };
+    const role = this.getUserRole();
+    return role ? labels[role] : '';
   }
 
-  private setRefreshToken(token: string): void {
-    localStorage.setItem(this.REFRESH_TOKEN_KEY, token);
+  private getStoredRole(): UserRole | null {
+    return localStorage.getItem(this.ROLE_KEY) as UserRole | null;
   }
 
-  private setUser(username: string): void {
-    localStorage.setItem(this.USER_KEY, username);
-  }
-
-  private setRole(role: 'admin' | 'customer'): void {
-    localStorage.setItem(this.ROLE_KEY, role);
-  }
-
-  private setCustomerId(customerId: string): void {
-    localStorage.setItem(this.CUSTOMER_ID_KEY, customerId);
+  private clearStorage(): void {
+    localStorage.removeItem(this.TOKEN_KEY);
+    localStorage.removeItem(this.REFRESH_TOKEN_KEY);
+    localStorage.removeItem(this.USERNAME_KEY);
+    localStorage.removeItem(this.ROLE_KEY);
+    localStorage.removeItem(this.FIRST_NAME_KEY);
+    localStorage.removeItem(this.LAST_NAME_KEY);
+    localStorage.removeItem(this.BOUTIQUE_ID_KEY);
   }
 
   private hasToken(): boolean {

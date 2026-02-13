@@ -11,19 +11,18 @@ export interface Customer {
   pays?: string;
   type: string;
   status?: string;
-  paymentType?: string;
   accountBalance?: number;
   creditLimit?: number;
   createdAt?: string;
 }
 
 export interface CustomerDetails extends Customer {
-  contracts?: Contract[];
+  abonnements?: Abonnement[];
   bills?: Bill[];
 }
 
-// Matches ContratDto (subscription-service)
-export interface Contract {
+// Matches AbonnementDto (subscription-service)
+export interface Abonnement {
   id: number;
   clientId: number;
   offreId: number;
@@ -62,8 +61,8 @@ export interface Offer {
   dateDebut?: string;
   dateFin?: string;
   status?: string;
+  paymentType?: string;
   serviceIds?: number[];
-  // Aliases used by templates
   nom?: string;
   prixBase?: number;
   active?: boolean;
@@ -74,7 +73,7 @@ export interface Bill {
   id: number;
   numeroFacture: string;
   clientId: number;
-  contratId?: number;
+  abonnementId?: number;
   dateFacture: string;
   dateEcheance: string;
   periodeDebut?: string;
@@ -126,7 +125,7 @@ export interface Payment {
 // Matches UsageRecordDto (usage-service)
 export interface UsageRecord {
   id: number;
-  contratId: number;
+  abonnementId: number;
   serviceId: number;
   quantite: number;
   prixUnitaire: number;

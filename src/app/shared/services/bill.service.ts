@@ -47,9 +47,9 @@ export class BillService {
     return this.http.get<Bill[]>(`${this.baseUrl}/status/${status}`);
   }
 
-  generateInvoice(contratId: number, periodeDebut: string, periodeFin: string): Observable<Bill> {
+  generateInvoice(abonnementId: number, periodeDebut: string, periodeFin: string): Observable<Bill> {
     return this.http.post<Bill>(`${this.baseUrl}/generate`, {
-      contratId,
+      abonnementId,
       periodeDebut,
       periodeFin
     });

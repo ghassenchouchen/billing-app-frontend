@@ -2,9 +2,9 @@
   <div class="auth-card">
     <section class="auth-visual">
       <div class="auth-visual__inner">
-        <span class="auth-badge">Application de facturation télécom</span>
+        <span class="auth-badge">Plateforme de facturation télécom</span>
         <h1 class="auth-title">Bon retour</h1>
-        <p class="auth-subtitle">Gérez les clients, contrats, offres et factures dans un espace sécurisé.</p>
+        <p class="auth-subtitle">Gérez les clients, abonnements, offres et factures dans un espace sécurisé.</p>
         <div class="auth-metrics">
           <div>
             <span class="metric-value">24/7</span>
@@ -22,25 +22,14 @@
       <div class="auth-form__header">
         <div class="brand-mark">TB</div>
         <div>
-          <h2>Connexion à votre compte</h2>
-          <p class="muted">Utilisez vos identifiants pour continuer.</p>
+          <h2>Connexion</h2>
+          <p class="muted">Accès réservé au personnel autorisé.</p>
         </div>
-      </div>
-
-      <div class="role-selector">
-        <button type="button" class="role-btn" [class.active]="!isCustomerLogin" (click)="isCustomerLogin = false">
-          <span class="material-icons">admin_panel_settings</span>
-          <span>Administrateur</span>
-        </button>
-        <button type="button" class="role-btn" [class.active]="isCustomerLogin" (click)="isCustomerLogin = true">
-          <span class="material-icons">person</span>
-          <span>Client</span>
-        </button>
       </div>
 
       <form (ngSubmit)="onSubmit(loginForm)" #loginForm="ngForm" novalidate>
         <div class="form-group">
-          <label for="username" class="form-label">{{ isCustomerLogin ? 'Email' : 'Nom d\'utilisateur' }}</label>
+          <label for="username" class="form-label">Nom d'utilisateur</label>
           <input
             type="text"
             class="form-control"
@@ -48,10 +37,10 @@
             name="username"
             ngModel
             #username="ngModel"
-            [placeholder]="isCustomerLogin ? 'client@example.com' : 'john.doe'"
-            [autocomplete]="isCustomerLogin ? 'email' : 'username'"
+            placeholder="nom.prenom"
+            autocomplete="username"
             required>
-          <small class="text-danger" *ngIf="loginForm.submitted && username.invalid">{{ isCustomerLogin ? 'L\'email est requis.' : 'Le nom d\'utilisateur est requis.' }}</small>
+          <small class="text-danger" *ngIf="loginForm.submitted && username.invalid">Le nom d'utilisateur est requis.</small>
         </div>
 
         <div class="form-group">
@@ -69,15 +58,10 @@
           <small class="text-danger" *ngIf="loginForm.submitted && password.invalid">Le mot de passe est requis.</small>
         </div>
 
-        <div class="form-meta">
-          <label class="checkbox">
-            <input type="checkbox" name="remember" ngModel>
-            <span>Se souvenir de moi</span>
-          </label>
-          <a class="link" href="#">Mot de passe oublié ?</a>
-        </div>
-
-        <button type="submit" class="btn-login">Se connecter</button>
+        <button type="submit" class="btn-login" [disabled]="isLoading">
+          <span *ngIf="!isLoading">Se connecter</span>
+          <span *ngIf="isLoading">Connexion en cours...</span>
+        </button>
       </form>
 
       <div class="error-message" *ngIf="errorMessage">

@@ -20,7 +20,7 @@ export interface SearchSection {
 export class SearchService {
   private clients: any[] | null = null;
   private bills: any[] | null = null;
-  private contracts: any[] | null = null;
+  private abonnements: any[] | null = null;
   private services: any[] | null = null;
   private offers: any[] | null = null;
 
@@ -58,15 +58,15 @@ export class SearchService {
           sections.push({ title: 'Factures', results: billResults });
         }
 
-        const contractResults = (this.contracts || [])
-          .filter((c) => this.match(query, `${c.id} contrat client ${c.clientId} offre ${c.offreId} ${c.status}`))
+        const abonnementResults = (this.abonnements || [])
+          .filter((c) => this.match(query, `${c.id} abonnement client ${c.clientId} offre ${c.offreId} ${c.status}`))
           .map((c) => ({
-            label: `Contrat #${c.id}`,
+            label: `Abonnement #${c.id}`,
             sublabel: `Client #${c.clientId} · ${c.status || 'ACTIVE'}`,
-            route: '/Contracts'
+            route: '/Abonnements'
           }));
-        if (contractResults.length) {
-          sections.push({ title: 'Contrats', results: contractResults });
+        if (abonnementResults.length) {
+          sections.push({ title: 'Abonnements', results: abonnementResults });
         }
 
         const serviceResults = (this.services || [])
@@ -110,10 +110,10 @@ export class SearchService {
         catchError(() => { this.bills = []; return of([]); })
       ));
     }
-    if (!this.contracts) {
+    if (!this.abonnements) {
       requests.push(this.http.get<any[]>('/api/subscriptions').pipe(
-        tap((data) => (this.contracts = data)),
-        catchError(() => { this.contracts = []; return of([]); })
+        tap((data) => (this.abonnements = data)),
+        catchError(() => { this.abonnements = []; return of([]); })
       ));
     }
     if (!this.services) {
