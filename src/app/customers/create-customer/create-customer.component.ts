@@ -17,7 +17,7 @@ export class CreateCustomerComponent implements OnDestroy {
 
   // Step 1 — Client data
   clientForm = {
-    type: 'Individu',
+    type: 'INDIVIDUAL',
     nom: '',
     prenom: '',
     pieceIdentite: '',
@@ -79,7 +79,7 @@ export class CreateCustomerComponent implements OnDestroy {
     if (!this.clientForm.nom.trim()) {
       this.formErrors['nom'] = 'Le nom est requis';
     }
-    if (this.clientForm.type === 'RESIDENTIAL' && !this.clientForm.prenom.trim()) {
+    if (this.clientForm.type === 'INDIVIDUAL' && !this.clientForm.prenom.trim()) {
       this.formErrors['prenom'] = 'Le prénom est requis';
     }
     if (!this.clientForm.email.trim()) {
@@ -134,6 +134,7 @@ export class CreateCustomerComponent implements OnDestroy {
       telephone: this.clientForm.telephone.startsWith('+216')
         ? this.clientForm.telephone
         : '+216 ' + this.clientForm.telephone,
+      pieceIdentite: this.clientForm.pieceIdentite || '',
       adresse: this.clientForm.adresse,
       type: this.clientForm.type,
       ville: '',
@@ -157,7 +158,7 @@ export class CreateCustomerComponent implements OnDestroy {
 
   resetForm(): void {
     this.clientForm = {
-      type: 'RESIDENTIAL', nom: '', prenom: '',
+      type: 'INDIVIDUAL', nom: '', prenom: '',
       pieceIdentite: '', telephone: '', email: '', adresse: ''
     };
     this.formErrors = {};
@@ -174,7 +175,7 @@ export class CreateCustomerComponent implements OnDestroy {
   }
 
   getTypeLabel(): string {
-    return this.clientForm.type === 'BUSINESS' ? 'Business' : 'Individu';
+    return this.clientForm.type === 'BUSINESS' ? 'Business / B2B' : 'Individu';
   }
 
   private getSampleOffers(): Offer[] {

@@ -5,6 +5,7 @@ export interface Customer {
   prenom: string;
   email: string;
   telephone?: string;
+  pieceIdentite?: string;   // CIN / Passport number
   adresse: string;
   ville?: string;
   codePostal?: string;

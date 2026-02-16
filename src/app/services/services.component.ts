@@ -16,13 +16,23 @@ export class ServicesComponent implements OnInit, OnDestroy {
   formMode: 'create' | 'edit' = 'create';
   formData = { code: '', libelle: '', prixUnitaire: 0, unite: 'OCTET', category: 'DATA' };
   saving = false;
+  viewMode: 'cards' | 'table' = 'cards';
   showConfirmModal = false;
   confirmModalConfig = {
     title: '',
     message: '',
     action: null as (() => void) | null
   };
+  usingSampleData = false;
   private destroy$ = new Subject<void>();
+
+  get activeCount(): number {
+    return this.listofServices.filter(s => s.active).length;
+  }
+
+  get inactiveCount(): number {
+    return this.listofServices.filter(s => !s.active).length;
+  }
 
   constructor(private serviceService: ServicesService) {}
 
@@ -38,8 +48,20 @@ export class ServicesComponent implements OnInit, OnDestroy {
   loadServices(): void {
     this.serviceService.getServices()
       .pipe(takeUntil(this.destroy$))
-      .subscribe((data) => {
-        this.listofServices = data;
+      .subscribe({
+        next: (data) => {
+          if (data && data.length) {
+            this.listofServices = data;
+            this.usingSampleData = false;
+          } else {
+            this.listofServices = this.getSampleServices();
+            this.usingSampleData = true;
+          }
+        },
+        error: () => {
+          this.listofServices = this.getSampleServices();
+          this.usingSampleData = true;
+        }
       });
   }
 
@@ -122,11 +144,15 @@ export class ServicesComponent implements OnInit, OnDestroy {
 
   confirmDelete(id: string): void {
     this.showConfirmModal = false;
-    this.serviceService.deleteService(id)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.loadServices();
-      });
+    if (this.usingSampleData) {
+      this.listofServices = this.listofServices.filter(s => String(s.id) !== id);
+    } else {
+      this.serviceService.deleteService(id)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(() => {
+          this.loadServices();
+        });
+    }
   }
 
   cancelConfirm(): void {
@@ -137,5 +163,58 @@ export class ServicesComponent implements OnInit, OnDestroy {
     this.showForm = false;
     this.formData = { code: '', libelle: '', prixUnitaire: 0, unite: 'OCTET', category: 'DATA' };
     this.servicedetails = null;
+  }
+
+  getServiceIcon(service: Service): string {
+    const cat = (service.category || '').toUpperCase();
+    switch (cat) {
+      case 'VOICE': return 'call';
+      case 'DATA': return 'cell_tower';
+      case 'SMS': return 'sms';
+      case 'ROAMING': return 'public';
+      case 'VALUE_ADDED': return 'star';
+      default: return 'miscellaneous_services';
+    }
+  }
+
+  getCategoryClass(category?: string): string {
+    switch ((category || '').toUpperCase()) {
+      case 'VOICE': return 'cat-voice';
+      case 'DATA': return 'cat-data';
+      case 'SMS': return 'cat-sms';
+      case 'ROAMING': return 'cat-roaming';
+      case 'VALUE_ADDED': return 'cat-value';
+      default: return 'cat-default';
+    }
+  }
+
+  getCategoryLabel(category?: string): string {
+    switch ((category || '').toUpperCase()) {
+      case 'VOICE': return 'Voix';
+      case 'DATA': return 'Données';
+      case 'SMS': return 'SMS';
+      case 'ROAMING': return 'Roaming';
+      case 'VALUE_ADDED': return 'Valeur ajoutée';
+      default: return category || 'Autre';
+    }
+  }
+
+  getUniteLabel(unite?: string): string {
+    switch ((unite || '').toUpperCase()) {
+      case 'SECONDE': return 'sec';
+      case 'OCTET': return 'Mo';
+      case 'SMS': return 'sms';
+      case 'UNITE': return 'unité';
+      default: return unite || 'unité';
+    }
+  }
+
+  private getSampleServices(): Service[] {
+    return [
+      { id: 1, code: 'SVC_APPELS', libelle: 'Appels', unite: 'SECONDE', prixUnitaire: 0.005, category: 'VOICE', active: true },
+      { id: 2, code: 'SVC_DATA', libelle: 'Données Mobiles', unite: 'OCTET', prixUnitaire: 0.010, category: 'DATA', active: true },
+      { id: 3, code: 'SVC_SMS', libelle: 'SMS', unite: 'SMS', prixUnitaire: 0.040, category: 'SMS', active: true },
+      { id: 4, code: 'SVC_ROAMING', libelle: 'Roaming', unite: 'SECONDE', prixUnitaire: 0.090, category: 'ROAMING', active: true },
+    ];
   }
 }

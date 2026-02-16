@@ -37,7 +37,7 @@
 
       <!-- Type toggle -->
       <div class="type-toggle">
-        <div class="type-option" [ngClass]="{'selected': clientForm.type === 'RESIDENTIAL'}" (click)="clientForm.type = 'RESIDENTIAL'">
+        <div class="type-option" [ngClass]="{'selected': clientForm.type === 'INDIVIDUAL'}" (click)="clientForm.type = 'INDIVIDUAL'">
           <div class="type-icon"><span class="material-icons">person</span></div>
           <div class="type-label">
             <h4>Individu</h4>
@@ -59,7 +59,7 @@
         <div class="form-section">
           <h3><span class="material-icons">badge</span> Identité</h3>
 
-          <div class="form-group" *ngIf="clientForm.type === 'RESIDENTIAL'">
+          <div class="form-group" *ngIf="clientForm.type === 'INDIVIDUAL'">
             <label>Prénom *</label>
             <input class="form-control" [ngClass]="{'error': formErrors['prenom']}" [(ngModel)]="clientForm.prenom" placeholder="Prénom du client" />
             <div class="form-error" *ngIf="formErrors['prenom']">{{ formErrors['prenom'] }}</div>
@@ -198,7 +198,7 @@
             <span class="summary-label">Type</span>
             <span class="summary-value">{{ getTypeLabel() }}</span>
           </div>
-          <div class="summary-item" *ngIf="clientForm.type === 'RESIDENTIAL'">
+          <div class="summary-item" *ngIf="clientForm.type === 'INDIVIDUAL'">
             <span class="summary-label">Prénom</span>
             <span class="summary-value">{{ clientForm.prenom }}</span>
           </div>

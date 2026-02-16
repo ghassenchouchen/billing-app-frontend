@@ -88,7 +88,7 @@ export class CustomerDetailComponent implements OnInit, OnDestroy {
 
   getTypeLabel(): string {
     if (!this.customer) return '';
-    return this.customer.type === 'BUSINESS' ? 'Business' : 'Individu';
+    return this.customer.type === 'BUSINESS' ? 'Business / B2B' : 'Individu';
   }
 
   getStatusLabel(): string {
@@ -136,12 +136,10 @@ export class CustomerDetailComponent implements OnInit, OnDestroy {
     const names: { [key: number]: string } = {
       1: 'Fibre Essentiel 20M',
       2: 'Fibre Pro 100M',
-      3: 'Mobile 5G Illimité',
+      3: 'Mobile 5G 10Go',
       4: 'Forfait Mobile 4G 25 Go',
-      5: 'Forfait Mobile 4G 10 Go',
-      6: 'Entreprise Convergent',
-      7: 'Recharge Data 10 Go',
-      8: 'Pack Roaming Maghreb'
+      5: 'Entreprise Convergent',
+      6: 'Pack Roaming Maghreb'
     };
     return names[offreId] || `Offre #${offreId}`;
   }
@@ -225,13 +223,19 @@ export class CustomerDetailComponent implements OnInit, OnDestroy {
     this.router.navigate(['/Bills']);
   }
 
+  createSubscription(): void {
+    if (this.customer) {
+      this.router.navigate(['/Abonnements/new', this.customer.customerRef]);
+    }
+  }
+
   private getSampleCustomerDetails(ref: string): CustomerDetails {
     const samples: { [key: string]: CustomerDetails } = {
       'CLT-2024-001': {
         customerRef: 'CLT-2024-001', nom: 'Ben Ali', prenom: 'Mohamed',
         email: 'mohamed.benali@email.tn', telephone: '+216 71 234 567',
         adresse: 'Av. Habib Bourguiba, 15', ville: 'Tunis', codePostal: '1000',
-        type: 'RESIDENTIAL', status: 'ACTIVE', accountBalance: 45.50, creditLimit: 200,
+        type: 'INDIVIDUAL', status: 'ACTIVE', accountBalance: 45.50, creditLimit: 200,
         createdAt: '2024-10-24',
         abonnements: [
           { id: 1, clientId: 1, offreId: 4, dateDebut: '2024-10-24', status: 'ACTIVE' },
@@ -261,7 +265,7 @@ export class CustomerDetailComponent implements OnInit, OnDestroy {
       customerRef: ref, nom: 'Client', prenom: 'Inconnu',
       email: 'client@email.tn', telephone: '+216 00 000 000',
       adresse: 'Adresse non disponible', ville: '', codePostal: '',
-      type: 'RESIDENTIAL', status: 'ACTIVE', accountBalance: 0, creditLimit: 150,
+      type: 'INDIVIDUAL', status: 'ACTIVE', accountBalance: 0, creditLimit: 150,
       createdAt: '2024-01-01', abonnements: [], bills: []
     };
   }

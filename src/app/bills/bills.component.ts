@@ -18,9 +18,51 @@ export class BillsComponent implements OnInit, OnDestroy {
   billLines: InvoiceLine[] = [];
   filterStart = '';
   filterEnd = '';
+  searchTerm = '';
+  statusFilter = '';
   calculatingId: string | null = null;
   post_sum: any;
+  showPayDialog = false;
+  payDialogBill: Bill | null = null;
+  paymentRef = '';
+  markingPaidId: string | null = null;
+  sendingReminderId: number | null = null;
   private destroy$ = new Subject<void>();
+
+  /* ── KPI computed properties ────────────────── */
+  get hasActiveFilters(): boolean {
+    return !!(this.searchTerm || this.statusFilter || this.filterStart || this.filterEnd);
+  }
+
+  get totalPaid(): number {
+    return this.allBills
+      .filter(b => b.statut === 'PAID')
+      .reduce((sum, b) => sum + (b.montantTTC || 0), 0);
+  }
+
+  get totalPending(): number {
+    return this.allBills
+      .filter(b => ['PENDING', 'SENT', 'DRAFT'].includes(b.statut))
+      .reduce((sum, b) => sum + (b.montantTTC || 0), 0);
+  }
+
+  get totalOverdue(): number {
+    return this.allBills
+      .filter(b => b.statut === 'OVERDUE')
+      .reduce((sum, b) => sum + (b.montantTTC || 0), 0);
+  }
+
+  get paidCount(): number {
+    return this.allBills.filter(b => b.statut === 'PAID').length;
+  }
+
+  get pendingCount(): number {
+    return this.allBills.filter(b => ['PENDING', 'SENT', 'DRAFT'].includes(b.statut)).length;
+  }
+
+  get overdueCount(): number {
+    return this.allBills.filter(b => b.statut === 'OVERDUE').length;
+  }
 
   constructor(private billService: BillService) {}
 
@@ -49,34 +91,100 @@ export class BillsComponent implements OnInit, OnDestroy {
       });
   }
 
-  Calculate(id: any): void {
-  
-    this.calculatingId = String(id);
-    this.billService.finalizeInvoice(String(id))
+  /* ── Admin Actions ────────────────────────────── */
+  openMarkPaidDialog(bill: Bill | BillDetails): void {
+    this.payDialogBill = bill as Bill;
+    this.paymentRef = '';
+    this.showPayDialog = true;
+  }
+
+  confirmMarkPaid(): void {
+    if (!this.payDialogBill || !this.paymentRef) return;
+    this.markingPaidId = String(this.payDialogBill.id);
+    this.billService.markAsPaid(String(this.payDialogBill.id), this.paymentRef)
       .pipe(takeUntil(this.destroy$))
-      .subscribe(data => {
-        this.post_sum = data;
-        this.patchBill(data);
-        this.calculatingId = null;
+      .subscribe({
+        next: (updated) => {
+          this.patchBill(updated);
+          if (this.billdetails && this.billdetails.id === this.payDialogBill?.id) {
+            this.billdetails = { ...this.billdetails, statut: 'PAID', paidAt: new Date().toISOString() };
+          }
+          this.showPayDialog = false;
+          this.markingPaidId = null;
+          this.payDialogBill = null;
+        },
+        error: () => {
+          this.markingPaidId = null;
+        }
       });
   }
 
-  filterBills(): void {
-    if (!this.filterStart || !this.filterEnd) {
-      return;
+  sendReminder(bill: Bill | BillDetails): void {
+    this.sendingReminderId = bill.id;
+    this.billService.sendInvoice(String(bill.id))
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (updated) => {
+          this.patchBill(updated);
+          this.sendingReminderId = null;
+        },
+        error: () => {
+          this.sendingReminderId = null;
+        }
+      });
+  }
+
+  cancelBill(bill: Bill | BillDetails): void {
+    if (!confirm('Êtes-vous sûr de vouloir annuler cette facture ? Cette action est irréversible.')) return;
+    // Use PATCH or a cancel endpoint — for now we update the status via a finalize-like call
+    // Since we have sendInvoice, we'll use a status update approach
+    const updated = { ...bill, statut: 'CANCELLED' } as Bill;
+    this.patchBill(updated);
+    if (this.billdetails && this.billdetails.id === bill.id) {
+      this.billdetails = { ...this.billdetails, statut: 'CANCELLED' };
     }
-    const startDate = new Date(this.filterStart);
-    const endDate = new Date(this.filterEnd);
-    
-    this.listofbills = this.allBills.filter(bill => {
-      const billDate = new Date(bill.dateFacture);
-      return billDate >= startDate && billDate <= endDate;
-    });
+    // Also update in allBills
+    const idx = this.allBills.findIndex(b => b.id === bill.id);
+    if (idx >= 0) {
+      this.allBills[idx] = { ...this.allBills[idx], statut: 'CANCELLED' };
+    }
+  }
+
+  applyFilters(): void {
+    let filtered = [...this.allBills];
+
+    // Text search (invoice number or client ID)
+    if (this.searchTerm) {
+      const term = this.searchTerm.toLowerCase();
+      filtered = filtered.filter(b =>
+        (b.numeroFacture && b.numeroFacture.toLowerCase().includes(term)) ||
+        (b.clientId && String(b.clientId).toLowerCase().includes(term))
+      );
+    }
+
+    // Status filter
+    if (this.statusFilter) {
+      filtered = filtered.filter(b => b.statut === this.statusFilter);
+    }
+
+    // Date range filter
+    if (this.filterStart) {
+      const startDate = new Date(this.filterStart);
+      filtered = filtered.filter(b => new Date(b.dateFacture) >= startDate);
+    }
+    if (this.filterEnd) {
+      const endDate = new Date(this.filterEnd);
+      filtered = filtered.filter(b => new Date(b.dateFacture) <= endDate);
+    }
+
+    this.listofbills = filtered;
   }
 
   clearFilter(): void {
     this.filterStart = '';
     this.filterEnd = '';
+    this.searchTerm = '';
+    this.statusFilter = '';
     this.listofbills = this.allBills;
   }
 
@@ -85,14 +193,12 @@ export class BillsComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const headers = ['numeroFacture', 'clientId', 'dateFacture', 'dateEcheance', 'montantHT', 'montantTVA', 'montantTTC', 'statut'];
+    const headers = ['numeroFacture', 'clientId', 'dateFacture', 'dateEcheance', 'montantTTC', 'statut'];
     const rows = this.listofbills.map(bill => [
       bill.numeroFacture,
       bill.clientId,
       bill.dateFacture,
       bill.dateEcheance,
-      bill.montantHT,
-      bill.montantTVA,
       bill.montantTTC,
       bill.statut
     ]);

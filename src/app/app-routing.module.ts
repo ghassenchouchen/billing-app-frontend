@@ -5,6 +5,8 @@ import { CustomerDetailComponent } from './customers/customer-detail/customer-de
 import { CreateCustomerComponent } from './customers/create-customer/create-customer.component';
 import { ServicesComponent } from './services/services.component';
 import { AbonnementsComponent } from './abonnements/abonnements.component';
+import { CreateSubscriptionComponent } from './abonnements/create-subscription/create-subscription.component';
+import { SubscriptionDetailComponent } from './abonnements/subscription-detail/subscription-detail.component';
 import { OffersComponent } from './offers/offers.component';
 import { BillsComponent } from './bills/bills.component';
 import { LoginComponent } from './login/login.component';
@@ -16,6 +18,9 @@ const routes: Routes = [
   { path: 'Customers/new', component: CreateCustomerComponent, canActivate: [AuthGuard] },
   { path: 'Customers/:ref', component: CustomerDetailComponent, canActivate: [AuthGuard] },
   { path: 'Abonnements', component: AbonnementsComponent, canActivate: [AuthGuard] },
+  { path: 'Abonnements/new', component: CreateSubscriptionComponent, canActivate: [AuthGuard] },
+  { path: 'Abonnements/new/:customerRef', component: CreateSubscriptionComponent, canActivate: [AuthGuard] },
+  { path: 'Abonnements/:id', component: SubscriptionDetailComponent, canActivate: [AuthGuard] },
   { path: 'Services', component: ServicesComponent, canActivate: [AuthGuard] },
   { path: 'Offers', component: OffersComponent, canActivate: [AuthGuard] },
   { path: 'Bills', component: BillsComponent, canActivate: [AuthGuard] },

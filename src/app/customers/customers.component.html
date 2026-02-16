@@ -60,7 +60,7 @@ Nouveau Client
 <div class="form-group">
 <label>Type de profil</label>
 <select class="form-control" [(ngModel)]="formData.type">
-<option value="RESIDENTIAL">Individu</option>
+<option value="INDIVIDUAL">Individu</option>
 <option value="BUSINESS">Business / B2B</option>
 </select>
 </div>
@@ -78,7 +78,6 @@ Annuler
 </div>
 </div>
 
-<!-- Search & Filter Bar -->
 <div class="action-bar">
 <div class="search-input-wrapper">
 <span class="material-icons search-icon">search</span>
@@ -93,7 +92,6 @@ Filtres
 </button>
 </div>
 
-<!-- Filter Chips -->
 <div class="filter-chips">
 <button class="filter-chip" [class.active]="!statusFilter && !typeFilter" (click)="clearFilters()">
 Tous les clients ({{totalCount}})
@@ -104,7 +102,7 @@ Actifs
 <button class="filter-chip" [class.active]="statusFilter === 'INACTIVE' || statusFilter === 'SUSPENDED'" (click)="setFilter('status', 'INACTIVE')">
 Inactifs
 </button>
-<button class="filter-chip" [class.active]="typeFilter === 'RESIDENTIAL'" (click)="setFilter('type', 'RESIDENTIAL')">
+<button class="filter-chip" [class.active]="typeFilter === 'INDIVIDUAL'" (click)="setFilter('type', 'INDIVIDUAL')">
 Individu
 </button>
 <button class="filter-chip" [class.active]="typeFilter === 'BUSINESS'" (click)="setFilter('type', 'BUSINESS')">
@@ -112,7 +110,6 @@ Business
 </button>
 </div>
 
-<!-- Client Table -->
 <div class="card section-card data-table">
 <div class="card-body" style="padding:0">
 <div class="table-responsive">
@@ -182,7 +179,6 @@ Aucun client trouv&eacute;
 </tbody>
 </table>
 </div>
-<!-- Pagination -->
 <div class="table-footer">
 <span class="table-footer__info">Affichage de 1-{{filteredCustomers.length}} sur {{totalCount}} clients</span>
 <div class="table-footer__pages">
@@ -200,7 +196,6 @@ Aucun client trouv&eacute;
 </div>
 </div>
 
-<!-- Customer Detail Panel -->
 <div class="card section-card detail-panel" *ngIf="customerdetails">
 <div class="card-header">
 <div class="detail-panel-header">

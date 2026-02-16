@@ -32,18 +32,18 @@ export class AbonnementService {
   }
 
   activateAbonnement(abonnementId: string): Observable<Abonnement> {
-    return this.http.post<Abonnement>(`${this.baseUrl}/${abonnementId}/activate`, null);
+    return this.http.put<Abonnement>(`${this.baseUrl}/${abonnementId}/activate`, null);
   }
 
   suspendAbonnement(abonnementId: string): Observable<Abonnement> {
-    return this.http.post<Abonnement>(`${this.baseUrl}/${abonnementId}/suspend`, null);
+    return this.http.put<Abonnement>(`${this.baseUrl}/${abonnementId}/suspend`, null);
   }
 
   terminateAbonnement(abonnementId: string): Observable<Abonnement> {
-    return this.http.post<Abonnement>(`${this.baseUrl}/${abonnementId}/terminate`, null);
+    return this.http.put<Abonnement>(`${this.baseUrl}/${abonnementId}/terminate`, null);
   }
 
   requestCancellation(abonnementId: string): Observable<Abonnement> {
-    return this.http.post<Abonnement>(`${this.baseUrl}/${abonnementId}/terminate`, null);
+    return this.http.put<Abonnement>(`${this.baseUrl}/${abonnementId}/terminate`, null);
   }
 }

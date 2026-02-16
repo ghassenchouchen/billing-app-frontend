@@ -66,6 +66,10 @@
               <p>{{ customer.telephone || '—' }}</p>
             </div>
             <div class="info-item">
+              <label>CIN / Pièce d'identité</label>
+              <p>{{ customer.pieceIdentite || '—' }}</p>
+            </div>
+            <div class="info-item">
               <label>Email</label>
               <p>{{ customer.email }}</p>
             </div>
@@ -89,7 +93,12 @@
       <div class="section-card">
         <div class="section-card-header">
           <h2><span class="material-icons">subscriptions</span> Abonnements Actifs</h2>
-          <span style="font-size: 13px; color: var(--muted);">{{ getActiveAbonnements().length }} actif(s)</span>
+          <div style="display:flex;align-items:center;gap:12px">
+            <span style="font-size: 13px; color: var(--muted);">{{ getActiveAbonnements().length }} actif(s)</span>
+            <button class="btn-ghost" style="padding:6px 14px;font-size:12px" (click)="createSubscription()">
+              <span class="material-icons" style="font-size:16px">add</span> Nouvel Abonnement
+            </button>
+          </div>
         </div>
         <div class="section-card-body">
           <div class="subscription-list" *ngIf="getActiveAbonnements().length > 0">

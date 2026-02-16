@@ -13,6 +13,8 @@ import { CustomerDetailComponent } from './customers/customer-detail/customer-de
 import { CreateCustomerComponent } from './customers/create-customer/create-customer.component';
 import { ServicesComponent } from './services/services.component';
 import { AbonnementsComponent } from './abonnements/abonnements.component';
+import { CreateSubscriptionComponent } from './abonnements/create-subscription/create-subscription.component';
+import { SubscriptionDetailComponent } from './abonnements/subscription-detail/subscription-detail.component';
 import { OffersComponent } from './offers/offers.component';
 import { BillsComponent } from './bills/bills.component';
 import { LoginComponent } from './login/login.component';
@@ -32,6 +34,8 @@ import { ErrorInterceptor } from './core/interceptors/error.interceptor';
     CreateCustomerComponent,
     ServicesComponent,
     AbonnementsComponent,
+    CreateSubscriptionComponent,
+    SubscriptionDetailComponent,
     OffersComponent,
     BillsComponent,
     LoginComponent,
