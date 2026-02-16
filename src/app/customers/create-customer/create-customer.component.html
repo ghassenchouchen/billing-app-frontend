@@ -1,0 +1,265 @@
+<div class="create-page">
+
+  <!-- Wizard Progress Bar -->
+  <div class="wizard-bar">
+    <div class="wizard-steps">
+      <div class="wizard-step" [ngClass]="{'active': currentStep === 1, 'done': currentStep > 1}" (click)="goToStep(1)">
+        <div class="step-circle">
+          <span *ngIf="currentStep <= 1">1</span>
+          <span class="material-icons" *ngIf="currentStep > 1" style="font-size:18px">check</span>
+        </div>
+        <span class="step-label">Client</span>
+      </div>
+      <div class="wizard-connector" [ngClass]="{'done': currentStep > 1}"></div>
+      <div class="wizard-step" [ngClass]="{'active': currentStep === 2, 'done': currentStep > 2, 'disabled': currentStep < 2}" (click)="goToStep(2)">
+        <div class="step-circle">
+          <span *ngIf="currentStep <= 2">2</span>
+          <span class="material-icons" *ngIf="currentStep > 2" style="font-size:18px">check</span>
+        </div>
+        <span class="step-label">Abonnement</span>
+      </div>
+      <div class="wizard-connector" [ngClass]="{'done': currentStep > 2}"></div>
+      <div class="wizard-step" [ngClass]="{'active': currentStep === 3, 'disabled': currentStep < 3}">
+        <div class="step-circle">3</div>
+        <span class="step-label">Validation</span>
+      </div>
+    </div>
+    <span class="cancel-link" (click)="cancel()">Annuler et quitter</span>
+  </div>
+
+  <!-- ═══════ STEP 1: Identification ═══════ -->
+  <div *ngIf="currentStep === 1">
+    <div class="form-card">
+      <div class="form-card-header">
+        <h1>Identification du Nouveau Client</h1>
+        <p>Renseignez les informations du client pour créer son profil dans le système.</p>
+      </div>
+
+      <!-- Type toggle -->
+      <div class="type-toggle">
+        <div class="type-option" [ngClass]="{'selected': clientForm.type === 'RESIDENTIAL'}" (click)="clientForm.type = 'RESIDENTIAL'">
+          <div class="type-icon"><span class="material-icons">person</span></div>
+          <div class="type-label">
+            <h4>Individu</h4>
+            <p>Client particulier</p>
+          </div>
+        </div>
+        <div class="type-option" [ngClass]="{'selected': clientForm.type === 'BUSINESS'}" (click)="clientForm.type = 'BUSINESS'">
+          <div class="type-icon"><span class="material-icons">business</span></div>
+          <div class="type-label">
+            <h4>Business / B2B</h4>
+            <p>Entreprise ou professionnel</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form fields -->
+      <div class="form-columns">
+        <!-- Left: Identity -->
+        <div class="form-section">
+          <h3><span class="material-icons">badge</span> Identité</h3>
+
+          <div class="form-group" *ngIf="clientForm.type === 'RESIDENTIAL'">
+            <label>Prénom *</label>
+            <input class="form-control" [ngClass]="{'error': formErrors['prenom']}" [(ngModel)]="clientForm.prenom" placeholder="Prénom du client" />
+            <div class="form-error" *ngIf="formErrors['prenom']">{{ formErrors['prenom'] }}</div>
+          </div>
+
+          <div class="form-group">
+            <label>{{ clientForm.type === 'BUSINESS' ? 'Raison Sociale *' : 'Nom *' }}</label>
+            <input class="form-control" [ngClass]="{'error': formErrors['nom']}" [(ngModel)]="clientForm.nom" [placeholder]="clientForm.type === 'BUSINESS' ? 'Nom de l\'entreprise' : 'Nom de famille'" />
+            <div class="form-error" *ngIf="formErrors['nom']">{{ formErrors['nom'] }}</div>
+          </div>
+
+          <div class="form-group">
+            <label>N° Pièce d'Identité (CNI/Passeport)</label>
+            <input class="form-control" [(ngModel)]="clientForm.pieceIdentite" placeholder="Ex: 12345678" />
+          </div>
+        </div>
+
+        <!-- Right: Contact -->
+        <div class="form-section">
+          <h3><span class="material-icons">contact_phone</span> Contact</h3>
+
+          <div class="form-group">
+            <label>Téléphone de contact *</label>
+            <div class="phone-input">
+              <input class="phone-prefix" value="+216" disabled />
+              <input class="form-control" [ngClass]="{'error': formErrors['telephone']}" [(ngModel)]="clientForm.telephone" placeholder="XX XXX XXX" />
+            </div>
+            <div class="form-error" *ngIf="formErrors['telephone']">{{ formErrors['telephone'] }}</div>
+          </div>
+
+          <div class="form-group">
+            <label>Adresse Email *</label>
+            <input class="form-control" [ngClass]="{'error': formErrors['email']}" [(ngModel)]="clientForm.email" type="email" placeholder="client@exemple.tn" />
+            <div class="form-error" *ngIf="formErrors['email']">{{ formErrors['email'] }}</div>
+          </div>
+
+          <div class="form-group">
+            <label>Adresse de Résidence</label>
+            <textarea class="form-control" [(ngModel)]="clientForm.adresse" rows="2" placeholder="Adresse complète"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="form-footer">
+        <div class="form-footer-info">
+          <span class="material-icons">info</span>
+          Les données seront enregistrées après validation de l'étape 3.
+        </div>
+        <div class="form-footer-actions">
+          <button class="btn-ghost" (click)="resetForm()">Réinitialiser</button>
+          <button class="btn-primary" (click)="nextStep()">
+            Sauvegarder et continuer <span class="material-icons">arrow_forward</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Help cards -->
+    <div class="help-cards">
+      <div class="help-card info">
+        <span class="material-icons">description</span>
+        <div>
+          <h4>Documents requis</h4>
+          <p>Pièce d'identité originale obligatoire. Un scan sera demandé lors de la validation du dossier.</p>
+        </div>
+      </div>
+      <div class="help-card warning">
+        <span class="material-icons">business</span>
+        <div>
+          <h4>Politique B2B</h4>
+          <p>Les comptes Business nécessitent un identifiant fiscal (MF) et un registre de commerce (RC).</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════ STEP 2: Abonnement ═══════ -->
+  <div *ngIf="currentStep === 2">
+    <div class="form-card">
+      <div class="form-card-header">
+        <h1>Choisir une Offre</h1>
+        <p>Sélectionnez l'offre à associer au nouveau client.</p>
+      </div>
+
+      <div class="offer-grid">
+        <div class="offer-card" *ngFor="let offer of availableOffers"
+             [ngClass]="{'selected': selectedOfferId === offer.id}"
+             (click)="selectOffer(offer.id)">
+          <div class="offer-card-header">
+            <div class="offer-icon">
+              <span class="material-icons">{{ getOfferIcon(offer) }}</span>
+            </div>
+            <h4>{{ offer.libelle }}</h4>
+          </div>
+          <p class="desc">{{ offer.description }}</p>
+          <div>
+            <span class="offer-price">{{ offer.prixMensuel?.toFixed(2) }} <small>TND/mois</small></span>
+            <span class="offer-type-badge">{{ offer.paymentType }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-error" *ngIf="formErrors['offer']" style="text-align:center;margin-bottom:16px">{{ formErrors['offer'] }}</div>
+
+      <div class="form-footer">
+        <div class="form-footer-info">
+          <span class="material-icons">info</span>
+          L'abonnement sera créé automatiquement à la validation.
+        </div>
+        <div class="form-footer-actions">
+          <button class="btn-ghost" (click)="prevStep()">
+            <span class="material-icons">arrow_back</span> Retour
+          </button>
+          <button class="btn-primary" (click)="nextStep()">
+            Continuer <span class="material-icons">arrow_forward</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════ STEP 3: Validation ═══════ -->
+  <div *ngIf="currentStep === 3">
+    <div class="form-card">
+      <div class="form-card-header">
+        <h1>Récapitulatif &amp; Validation</h1>
+        <p>Vérifiez les informations avant de confirmer la création du client.</p>
+      </div>
+
+      <div class="summary-grid">
+        <!-- Client summary -->
+        <div class="summary-section">
+          <h3><span class="material-icons">person</span> Informations Client</h3>
+          <div class="summary-item">
+            <span class="summary-label">Type</span>
+            <span class="summary-value">{{ getTypeLabel() }}</span>
+          </div>
+          <div class="summary-item" *ngIf="clientForm.type === 'RESIDENTIAL'">
+            <span class="summary-label">Prénom</span>
+            <span class="summary-value">{{ clientForm.prenom }}</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">{{ clientForm.type === 'BUSINESS' ? 'Raison Sociale' : 'Nom' }}</span>
+            <span class="summary-value">{{ clientForm.nom }}</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">Email</span>
+            <span class="summary-value">{{ clientForm.email }}</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">Téléphone</span>
+            <span class="summary-value">+216 {{ clientForm.telephone }}</span>
+          </div>
+          <div class="summary-item" *ngIf="clientForm.adresse">
+            <span class="summary-label">Adresse</span>
+            <span class="summary-value">{{ clientForm.adresse }}</span>
+          </div>
+        </div>
+
+        <!-- Offer summary -->
+        <div class="summary-section">
+          <h3><span class="material-icons">redeem</span> Offre Sélectionnée</h3>
+          <ng-container *ngIf="getSelectedOffer() as offer">
+            <div class="summary-item">
+              <span class="summary-label">Offre</span>
+              <span class="summary-value">{{ offer.libelle }}</span>
+            </div>
+            <div class="summary-item">
+              <span class="summary-label">Type de paiement</span>
+              <span class="summary-value">{{ offer.paymentType }}</span>
+            </div>
+            <div class="summary-item">
+              <span class="summary-label">Description</span>
+              <span class="summary-value" style="max-width:200px;text-align:right">{{ offer.description }}</span>
+            </div>
+            <div class="summary-total">
+              <span class="summary-label">Mensualité</span>
+              <span class="summary-value">{{ offer.prixMensuel?.toFixed(2) }} TND</span>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="form-footer" style="margin-top:24px">
+        <div class="form-footer-info">
+          <span class="material-icons">check_circle</span>
+          En confirmant, le client et son abonnement seront créés.
+        </div>
+        <div class="form-footer-actions">
+          <button class="btn-ghost" (click)="prevStep()">
+            <span class="material-icons">arrow_back</span> Retour
+          </button>
+          <button class="btn-primary" (click)="submit()" [disabled]="saving">
+            <span class="material-icons">check</span>
+            {{ saving ? 'Création en cours...' : 'Confirmer et créer' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { CustomersComponent } from './customers/customers.component';
+import { CustomerDetailComponent } from './customers/customer-detail/customer-detail.component';
+import { CreateCustomerComponent } from './customers/create-customer/create-customer.component';
 import { ServicesComponent } from './services/services.component';
 import { AbonnementsComponent } from './abonnements/abonnements.component';
 import { OffersComponent } from './offers/offers.component';
@@ -11,6 +13,8 @@ import { AuthGuard } from './core/guards/auth.guard';
 const routes: Routes = [
   { path: '', redirectTo: 'Login', pathMatch: 'full' },
   { path: 'Customers', component: CustomersComponent, canActivate: [AuthGuard] },
+  { path: 'Customers/new', component: CreateCustomerComponent, canActivate: [AuthGuard] },
+  { path: 'Customers/:ref', component: CustomerDetailComponent, canActivate: [AuthGuard] },
   { path: 'Abonnements', component: AbonnementsComponent, canActivate: [AuthGuard] },
   { path: 'Services', component: ServicesComponent, canActivate: [AuthGuard] },
   { path: 'Offers', component: OffersComponent, canActivate: [AuthGuard] },
