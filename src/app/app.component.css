@@ -225,6 +225,22 @@
   padding: 28px 32px 40px;
 }
 
+.nav-divider {
+  height: 1px;
+  background: rgba(148, 163, 184, 0.15);
+  margin: 12px 0;
+}
+
+.nav-section-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: rgba(148, 163, 184, 0.5);
+  padding: 4px 14px;
+  margin-bottom: 2px;
+}
+
 @media (max-width: 1200px) {
   .search-pill {
     min-width: 200px;

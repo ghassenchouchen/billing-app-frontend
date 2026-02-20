@@ -5,10 +5,10 @@
       <p class="page-subtitle">Gestion du stock de cartes SIM</p>
     </div>
     <div class="page-actions" *ngIf="canAddStock">
-      <button class="btn btn-action" (click)="openAddSimModal()">
+      <a class="btn btn-action" routerLink="/Boutique/stock/add">
         <span class="material-icons">add</span>
         Ajouter SIM
-      </button>
+      </a>
     </div>
   </div>
 
@@ -21,10 +21,10 @@
       <strong>Stock faible !</strong>
       <p>Il reste seulement {{ availableSim }} carte(s) SIM en stock. Pensez à réapprovisionner.</p>
     </div>
-    <button class="btn btn-warning" (click)="openAddSimModal()">
+    <a class="btn btn-warning" routerLink="/Boutique/stock/add">
       <span class="material-icons">add_circle</span>
       Réapprovisionner
-    </button>
+    </a>
   </div>
 
   <div class="stock-stats">
@@ -41,9 +41,9 @@
         <span class="stat-value">{{ availableSim }}</span>
         <span class="stat-label">En stock</span>
       </div>
-      <button class="btn-restock" *ngIf="isLowStock && canAddStock" (click)="openAddSimModal()" title="Réapprovisionner">
+      <a class="btn-restock" *ngIf="isLowStock && canAddStock" routerLink="/Boutique/stock/add" title="Réapprovisionner">
         <span class="material-icons">add</span>
-      </button>
+      </a>
     </div>
     <div class="stat-card">
       <span class="material-icons stat-icon activated">cell_tower</span>

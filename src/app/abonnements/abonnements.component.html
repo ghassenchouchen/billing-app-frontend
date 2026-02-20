@@ -1,5 +1,4 @@
 <div class="page">
-  <!-- Page Header -->
   <div class="page-header">
     <div>
       <h2 class="page-title">Gestion des Abonnements</h2>
@@ -13,7 +12,6 @@
     </div>
   </div>
 
-  <!-- Search & Filter Bar -->
   <div class="action-bar">
     <div class="search-input-wrapper">
       <span class="material-icons search-icon">search</span>
@@ -69,7 +67,7 @@
               </td>
               <td>
                 <div class="client-cell">
-                  <div class="client-avatar-sm" [style.background]="getAvatarColor(a.clientId)">
+                  <div class="client-avatar-sm">
                     {{ getInitials(a.clientId) }}
                   </div>
                   <div class="client-info-sm">
@@ -107,7 +105,6 @@
         </table>
       </div>
 
-      <!-- Pagination -->
       <div class="table-footer">
         <span class="table-footer__info">Affichage de 1-{{ filteredAbonnements.length }} sur {{ totalCount }} abonnements</span>
         <div class="table-footer__pages">
@@ -125,7 +122,6 @@
   </div>
 </div>
 
-<!-- Confirm Modal -->
 <app-confirm-modal
   [show]="showConfirmModal"
   [title]="confirmModalConfig.title"

@@ -222,6 +222,16 @@
         <p>Vérifiez les informations avant de créer l'abonnement.</p>
       </div>
 
+      <div class="confirmation-section" style="margin-bottom: 16px;">
+        <h3><span class="material-icons">schedule</span> Fréquence de facturation</h3>
+        <label class="conf-label" style="display:block;margin:8px 0 6px;">Choisir une fréquence</label>
+        <select class="form-control" [(ngModel)]="billingFrequency">
+          <option value="MONTHLY">Mensuelle</option>
+          <option value="QUARTERLY">Trimestrielle</option>
+          <option value="ANNUAL">Annuelle</option>
+        </select>
+      </div>
+
       <div class="confirmation-grid">
         <!-- Client summary -->
         <div class="confirmation-section" *ngIf="selectedCustomer">
@@ -273,7 +283,7 @@
           </div>
           <div class="conf-item">
             <span class="conf-label">Fréquence</span>
-            <span class="conf-value">Mensuelle</span>
+            <span class="conf-value">{{ getFrequencyLabel() }}</span>
           </div>
           <div class="conf-total">
             <span class="conf-label">Mensualité</span>

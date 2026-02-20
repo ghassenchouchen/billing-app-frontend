@@ -1,7 +1,5 @@
-/* == Page == */
 .page { min-height: 100%; }
 
-/* == Action Bar (Search + Filter btn + Nouveau Client) == */
 .action-bar {
   display: flex; align-items: center; gap: 12px;
 }
@@ -23,7 +21,6 @@
   font-size: 14px; font-weight: 600;
 }
 
-/* == Filter Chips == */
 .filter-chips {
   display: flex; align-items: center; gap: 8px;
   overflow-x: auto; padding-bottom: 2px;
@@ -44,7 +41,6 @@
   border-color: rgba(91, 75, 255, .25);
 }
 
-/* == Client Table == */
 .client-table thead th {
   font-size: 10px; text-transform: uppercase;
   letter-spacing: .12em; color: var(--muted);
@@ -56,7 +52,6 @@
 .customer-row { transition: background .12s ease; }
 .customer-row:hover .customer-name { color: var(--primary); }
 
-/* -- Avatar circle (design match) -- */
 .customer-avatar-circle {
   width: 40px; height: 40px; border-radius: 50%;
   background: #f1f5f9; color: #475569;
@@ -79,11 +74,9 @@
   letter-spacing: .04em; text-transform: uppercase;
 }
 
-/* -- Type cell -- */
 .type-cell { display: flex; align-items: center; gap: 6px; color: #475569; font-size: 14px; }
 .type-icon-sm { font-size: 18px !important; color: var(--muted); }
 
-/* -- Subscriptions cell -- */
 .subscriptions-cell { display: flex; align-items: center; gap: 6px; }
 
 .sub-tag {
@@ -100,7 +93,6 @@
 
 .no-sub { font-size: 11px; color: var(--muted); font-style: italic; }
 
-/* -- Status pill -- */
 .status-pill {
   display: inline-flex; align-items: center; gap: 6px;
   padding: 4px 12px; border-radius: 999px;
@@ -116,10 +108,8 @@
   background: currentColor;
 }
 
-/* -- Date cell -- */
 .date-cell { font-size: 13px; color: var(--muted); white-space: nowrap; }
 
-/* -- Action button (design: small icon button) -- */
 .btn-icon-sm {
   display: inline-flex; align-items: center; justify-content: center;
   width: 32px; height: 32px; border-radius: 8px;
@@ -136,7 +126,6 @@
 
 .text-right { text-align: right; }
 
-/* == Table Footer / Pagination == */
 .table-footer {
   display: flex; align-items: center; justify-content: space-between;
   padding: 16px 24px; border-top: 1px solid var(--border);
@@ -170,7 +159,6 @@
 
 .page-btn .material-icons { font-size: 18px; }
 
-/* == Empty State == */
 .empty-table {
   text-align: center; padding: 40px 16px !important;
   color: var(--muted); font-size: 14px;
@@ -180,7 +168,6 @@
   display: block; margin: 0 auto 8px; font-size: 40px; opacity: .35;
 }
 
-/* == Detail Panel == */
 .detail-panel .card-header {
   display: flex; align-items: center; justify-content: space-between;
 }
@@ -226,10 +213,8 @@
 
 .font-bold { font-weight: 700; }
 
-/* == Form == */
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 
-/* == Responsive == */
 @media (max-width: 768px) {
   .action-bar { flex-direction: column; align-items: stretch; }
   .search-input-wrapper { max-width: 100%; }

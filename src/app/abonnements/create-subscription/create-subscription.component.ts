@@ -17,6 +17,7 @@ export class CreateSubscriptionComponent implements OnInit, OnDestroy {
   saving = false;
   createdId: number | null = null;
   today = new Date().toISOString().split('T')[0];
+  billingFrequency: 'MONTHLY' | 'QUARTERLY' | 'ANNUAL' = 'MONTHLY';
 
   // Step 1: Customer
   customers: Customer[] = [];
@@ -203,16 +204,17 @@ export class CreateSubscriptionComponent implements OnInit, OnDestroy {
     this.router.navigate(['/Abonnements']);
   }
 
-  // ─── Submit ───
   submit(): void {
     if (!this.selectedCustomer || !this.selectedOffer) return;
     this.saving = true;
 
     const payload = {
       clientId: this.getCustomerId(this.selectedCustomer),
+      clientRef: this.selectedCustomer.customerRef,
       offreId: this.selectedOffer.id,
       dateDebut: new Date().toISOString().split('T')[0],
-      billingFrequency: 'MONTHLY'
+      dateFin: null,
+      billingFrequency: this.billingFrequency
     };
 
     this.abonnementService.createAbonnement(payload)
@@ -256,6 +258,14 @@ export class CreateSubscriptionComponent implements OnInit, OnDestroy {
   getCustomerFullName(c: Customer): string {
     if (c.type === 'BUSINESS') return c.nom;
     return `${c.prenom} ${c.nom}`.trim();
+  }
+
+  getFrequencyLabel(): string {
+    switch (this.billingFrequency) {
+      case 'QUARTERLY': return 'Trimestrielle';
+      case 'ANNUAL': return 'Annuelle';
+      default: return 'Mensuelle';
+    }
   }
 
   getTypeLabel(c: Customer): string {

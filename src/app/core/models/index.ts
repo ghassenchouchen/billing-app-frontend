@@ -26,6 +26,7 @@ export interface CustomerDetails extends Customer {
 export interface Abonnement {
   id: number;
   clientId: number;
+  clientRef?: string;
   offreId: number;
   dateDebut?: string;
   dateFin?: string;

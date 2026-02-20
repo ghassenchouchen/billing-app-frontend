@@ -13,14 +13,14 @@
 				<span class="status-dot archived"></span>
 				{{inactiveCount}} Inactifs
 			</span>
-			<button class="btn btn-action" type="button" (click)="openCreateForm()" [disabled]="showForm">
+			<button *ngIf="isAdmin" class="btn btn-action" type="button" (click)="openCreateForm()" [disabled]="showForm">
 				<span class="material-icons">add</span>
 				Nouvelle offre
 			</button>
 		</div>
 	</div>
 
-	<div class="card section-card" *ngIf="showForm">
+	<div class="card section-card" *ngIf="showForm && isAdmin">
 		<div class="card-header">
 			<h5 class="card-title mb-0">{{ formMode === 'create' ? 'Nouveau forfait' : 'Modifier le forfait' }}</h5>
 			<button class="btn btn-ghost btn-sm" type="button" (click)="closeForm()" [disabled]="saving">
@@ -126,7 +126,7 @@
 					<span class="badge-soft success" *ngIf="offer.status === 'ACTIVE'">Actif</span>
 					<span class="badge-soft neutral" *ngIf="offer.status !== 'ACTIVE'">{{ offer.status === 'INACTIVE' ? 'Inactif' : (offer.status || 'Inactif') }}</span>
 				</div>
-				<div class="offer-card__actions">
+				<div class="offer-card__actions" *ngIf="isAdmin">
 					<button class="btn btn-ghost btn-sm" type="button" (click)="openEditForm(offer)" title="Modifier">
 						<span class="material-icons">edit</span>
 					</button>
@@ -141,7 +141,7 @@
 		<div class="empty-state" *ngIf="!listofoffers.length">
 			<span class="material-icons empty-icon">inventory_2</span>
 			<p>Aucune offre trouvée</p>
-			<button class="btn btn-action primary" type="button" (click)="openCreateForm()">
+			<button *ngIf="isAdmin" class="btn btn-action primary" type="button" (click)="openCreateForm()">
 				<span class="material-icons">add</span>
 				Créer une offre
 			</button>
@@ -164,7 +164,7 @@
 							<th class="text-right">Prix (TND)</th>
 							<th>Type</th>
 							<th>Statut</th>
-							<th>Actions</th>
+							<th *ngIf="isAdmin">Actions</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -180,7 +180,7 @@
 								<span class="badge-soft success" *ngIf="offer.status === 'ACTIVE'">Actif</span>
 								<span class="badge-soft neutral" *ngIf="offer.status !== 'ACTIVE'">{{ offer.status === 'INACTIVE' ? 'Inactif' : (offer.status || 'Inactif') }}</span>
 							</td>
-							<td class="actions-cell">
+							<td class="actions-cell" *ngIf="isAdmin">
 								<button class="btn btn-ghost btn-sm" type="button" (click)="openEditForm(offer)">
 									<span class="material-icons">edit</span>
 									Modifier

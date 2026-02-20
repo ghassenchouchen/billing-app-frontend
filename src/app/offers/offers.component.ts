@@ -4,6 +4,7 @@ import { takeUntil } from 'rxjs/operators';
 import { Offer, Service } from '../core/models';
 import { OffersService } from '../shared/services/offers.service';
 import { ServicesService } from '../shared/services/services.service';
+import { AuthService } from '../core/services/auth.service';
 
 @Component({
   selector: 'app-offers',
@@ -36,7 +37,11 @@ export class OffersComponent implements OnInit, OnDestroy {
     return this.listofoffers.filter(o => o.status !== 'ACTIVE').length;
   }
 
-  constructor(private offersService: OffersService, private servicesService: ServicesService) {}
+  get isAdmin(): boolean {
+    return this.authService.isAdmin();
+  }
+
+  constructor(private offersService: OffersService, private servicesService: ServicesService, private authService: AuthService) {}
 
   ngOnInit(): void {
     this.loadOffers();

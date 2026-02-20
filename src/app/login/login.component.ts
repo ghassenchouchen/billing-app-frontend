@@ -55,7 +55,17 @@ export class LoginComponent implements OnInit, OnDestroy {
         next: (response) => {
           this.isLoading = false;
           if (response.success) {
-            this.router.navigate([this.returnUrl || '/Customers']);
+            if (this.returnUrl && this.returnUrl !== '/Customers') {
+              this.router.navigate([this.returnUrl]);
+            } else {
+              // Role-based default landing page
+              const role = response.role;
+              if (role === 'RESPONSABLE_BOUTIQUE') {
+                this.router.navigate(['/Boutique/dashboard']);
+              } else {
+                this.router.navigate(['/Customers']);
+              }
+            }
           } else {
             this.errorMessage = response.message || 'Identifiants incorrects.';
           }
