@@ -37,6 +37,7 @@ export class AddStockComponent implements OnInit, OnDestroy {
 
   newSimData: StockItem = { iccid: '', imsi: '', msisdn: '', simType: 'STANDARD' };
   batch: StockItem[] = [];
+  batchQuantity: number = 25;
   saving = false;
   saveSuccess = false;
   saveError = '';

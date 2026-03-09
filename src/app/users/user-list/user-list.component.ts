@@ -4,7 +4,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { UserService, UserDto } from '../../core/services/user.service';
 import { BoutiqueApiService } from '../../core/services/boutique-api.service';
-import { UserRole } from '../../core/services/auth.service';
+import { UserRole, AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-user-list',
@@ -20,7 +20,7 @@ export class UserListComponent implements OnInit, OnDestroy {
   filterStatus = '';
   searchQuery = '';
 
-  roles: UserRole[] = ['AGENT_COMMERCIAL', 'RESPONSABLE_BOUTIQUE', 'ADMIN'];
+  roles: UserRole[] = ['AGENT_COMMERCIAL', 'RESPONSABLE_BOUTIQUE'];
   statuses = ['ACTIVE', 'DISABLED'];
 
   // Stats
@@ -34,10 +34,16 @@ export class UserListComponent implements OnInit, OnDestroy {
   constructor(
     private userService: UserService,
     private boutiqueApi: BoutiqueApiService,
+    private authService: AuthService,
     private router: Router
   ) {}
 
   ngOnInit(): void {
+    // Only admin can access this page
+    if (!this.authService.isAdmin()) {
+      this.router.navigate(['/Dashboard']);
+      return;
+    }
     this.loadUsers();
     this.loadBoutiques();
   }
@@ -53,7 +59,7 @@ export class UserListComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (users) => {
-          this.users = users;
+          this.users = users.filter(u => u.role !== 'ADMIN');
           this.computeStats();
           this.applyFilters();
           this.loading = false;
@@ -97,6 +103,8 @@ export class UserListComponent implements OnInit, OnDestroy {
 
   applyFilters(): void {
     this.filteredUsers = this.users.filter(u => {
+      // Never show ADMIN users
+      if (u.role === 'ADMIN') return false;
       const matchRole = !this.filterRole || u.role === this.filterRole;
       const matchStatus = !this.filterStatus || u.status === this.filterStatus;
       const matchSearch = !this.searchQuery ||
@@ -192,6 +200,22 @@ export class UserListComponent implements OnInit, OnDestroy {
           user.status = 'ACTIVE';
           this.computeStats();
           this.applyFilters();
+        }
+      });
+  }
+
+  deleteUser(user: UserDto): void {
+    if (!confirm(`Supprimer l'utilisateur ${user.firstName} ${user.lastName} ? Cette action est irréversible.`)) return;
+    this.userService.deleteUser(user.id)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          this.users = this.users.filter(u => u.id !== user.id);
+          this.computeStats();
+          this.applyFilters();
+        },
+        error: (err) => {
+          alert('Erreur lors de la suppression: ' + (err.error?.message || 'Erreur serveur'));
         }
       });
   }

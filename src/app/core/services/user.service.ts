@@ -44,8 +44,12 @@ export class UserService {
   ) {}
 
   private getHeaders(): HttpHeaders {
+    const role = this.authService.getUserRole();
+    if (!role) {
+      throw new Error('User is not authenticated or not authorized to access this resource');
+    }
     return new HttpHeaders({
-      'X-Auth-Role': this.authService.getUserRole() || ''
+      'X-Auth-Role': role
     });
   }
 
@@ -65,6 +69,10 @@ export class UserService {
     return this.http.get<UserDto[]>(`${this.baseUrl}/boutique/${boutiqueId}`, { headers: this.getHeaders() });
   }
 
+  getTeamByBoutique(boutiqueId: number): Observable<UserDto[]> {
+    return this.http.get<UserDto[]>(`${this.baseUrl}/boutique/${boutiqueId}/team`, { headers: this.getHeaders() });
+  }
+
   createUser(request: CreateUserRequest): Observable<UserDto> {
     return this.http.post<UserDto>(this.baseUrl, request, { headers: this.getHeaders() });
   }
@@ -79,5 +87,9 @@ export class UserService {
 
   enableUser(id: number): Observable<void> {
     return this.http.post<void>(`${this.baseUrl}/${id}/enable`, {}, { headers: this.getHeaders() });
+  }
+
+  deleteUser(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/${id}`, { headers: this.getHeaders() });
   }
 }

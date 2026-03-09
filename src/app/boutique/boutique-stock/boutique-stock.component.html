@@ -4,12 +4,6 @@
       <h2 class="page-title">SIM</h2>
       <p class="page-subtitle">Gestion du stock de cartes SIM</p>
     </div>
-    <div class="page-actions" *ngIf="canAddStock">
-      <a class="btn btn-action" routerLink="/Boutique/stock/add">
-        <span class="material-icons">add</span>
-        Ajouter SIM
-      </a>
-    </div>
   </div>
 
   <!-- Low Stock Alert -->
@@ -41,9 +35,6 @@
         <span class="stat-value">{{ availableSim }}</span>
         <span class="stat-label">En stock</span>
       </div>
-      <a class="btn-restock" *ngIf="isLowStock && canAddStock" routerLink="/Boutique/stock/add" title="Réapprovisionner">
-        <span class="material-icons">add</span>
-      </a>
     </div>
     <div class="stat-card">
       <span class="material-icons stat-icon activated">cell_tower</span>

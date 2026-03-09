@@ -85,8 +85,8 @@ export class BoutiqueApiService {
     return this.http.get<StockSim[]>(`${this.baseUrl}/${boutiqueId}/stock/available`);
   }
 
-  addSim(boutiqueId: number, iccid: string, simType: string): Observable<StockSim> {
-    return this.http.post<StockSim>(`${this.baseUrl}/${boutiqueId}/stock`, { iccid, simType });
+  addSimBatch(boutiqueId: number, sims: { iccid: string; imsi: string; msisdn: string; simType: string }[]): Observable<StockSim[]> {
+    return this.http.post<StockSim[]>(`${this.baseUrl}/${boutiqueId}/stock/batch`, sims);
   }
 
   assignSim(iccid: string, clientId: number): Observable<StockSim> {
@@ -95,10 +95,6 @@ export class BoutiqueApiService {
 
   assignAndActivateSim(iccid: string, clientId: number): Observable<StockSim> {
     return this.http.post<StockSim>(`${this.baseUrl}/stock/${iccid}/activate?clientId=${clientId}`, {});
-  }
-
-  addSimBatch(boutiqueId: number, sims: { iccid: string; imsi: string; msisdn: string; simType: string }[]): Observable<StockSim[]> {
-    return this.http.post<StockSim[]>(`${this.baseUrl}/${boutiqueId}/stock/batch`, sims);
   }
 
   getTransactions(boutiqueId: number): Observable<TransactionBoutique[]> {

@@ -64,16 +64,21 @@ export class BoutiqueDashboardComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (d) => {
           this.dashboard = d;
+          // Calculate low stock flag: if available SIMs < 5, mark as low stock
+          if (this.dashboard && this.dashboard.simAvailable < 5) {
+            this.dashboard.simLowStock = 1;
+          } else if (this.dashboard) {
+            this.dashboard.simLowStock = 0;
+          }
           this.loading = false;
         },
         error: () => {
-          // Fallback sample data
           this.dashboard = {
             revenueToday: 342.80,
             contractsThisMonth: 47,
             contractTarget: 200,
             simAvailable: 7,
-            simLowStock: 1,
+            simLowStock: 0,
             simByType: { STANDARD: 5, ESIM: 2 }
           };
           this.loading = false;

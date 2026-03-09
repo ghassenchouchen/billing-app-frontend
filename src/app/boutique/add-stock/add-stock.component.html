@@ -5,8 +5,8 @@
         <span class="material-icons">arrow_back</span>
       </button>
       <div>
-        <h2 class="page-title">Ajouter du stock</h2>
-        <p class="page-subtitle">Réapprovisionner la boutique en articles</p>
+        <h2 class="page-title">Réapprovisionner en SIM</h2>
+        <p class="page-subtitle">Recevoir et enregistrer un nouveau lot de cartes SIM</p>
       </div>
     </div>
   </div>
@@ -34,14 +34,8 @@
         <div class="card-header">
           <h3>
             <span class="material-icons">sim_card</span>
-            Nouvelle carte SIM
+            Réception d'un lot de SIM
           </h3>
-          <div class="header-actions">
-            <button class="btn btn-ghost btn-sm" (click)="generateSimData()">
-              <span class="material-icons">autorenew</span>
-              Générer
-            </button>
-          </div>
         </div>
 
         <div class="card-body">
@@ -54,29 +48,15 @@
               </select>
             </div>
             <div class="form-group">
-              <label>MSISDN <span class="required">*</span></label>
-              <input type="text" [(ngModel)]="newSimData.msisdn" placeholder="+216 XX XXX XXX">
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label>ICCID <span class="required">*</span></label>
-              <input type="text" [(ngModel)]="newSimData.iccid" placeholder="8921601234567890001234">
-            </div>
-            <div class="form-group">
-              <label>IMSI</label>
-              <input type="text" [(ngModel)]="newSimData.imsi" placeholder="605010000000001">
+              <label>Quantité du lot <span class="required">*</span></label>
+              <input type="number" [(ngModel)]="batchQuantity" placeholder="Ex: 50" min="1" max="200">
             </div>
           </div>
 
           <div class="form-footer">
-            <span class="duplicate-warn" *ngIf="isDuplicate">
-              <span class="material-icons">warning</span>
-              ICCID déjà dans la liste
-            </span>
-            <button class="btn btn-action btn-sm" (click)="addToList()" [disabled]="!canAddToList || isDuplicate">
-              <span class="material-icons">add</span>
-              Ajouter à la liste
+            <button class="btn btn-action" (click)="generateBatch(batchQuantity)" [disabled]="!batchQuantity || batchQuantity < 1">
+              <span class="material-icons">inventory_2</span>
+              Enregistrer la réception
             </button>
           </div>
         </div>
@@ -118,7 +98,7 @@
         <div class="empty-batch" *ngIf="batch.length === 0">
           <span class="material-icons">inbox</span>
           <p>Aucun article dans la liste</p>
-          <span class="hint">Remplissez le formulaire ci-dessus pour ajouter des cartes SIM</span>
+          <span class="hint">Choisissez le type de SIM et la quantité du lot ci-dessus.</span>
         </div>
 
         <div class="save-bar" *ngIf="batch.length > 0">
@@ -130,7 +110,7 @@
             <button class="btn btn-ghost" (click)="goBack()">Annuler</button>
             <button class="btn btn-primary" (click)="save()" [disabled]="saving">
               <span class="material-icons">{{ saving ? 'hourglass_empty' : 'save' }}</span>
-              {{ saving ? 'Enregistrement…' : 'Enregistrer le stock' }}
+              {{ saving ? 'Enregistrement…' : 'Ajouter au stock' }}
             </button>
           </div>
         </div>
@@ -204,14 +184,14 @@
             <span class="step-num">1</span>
             <div>
               <strong>Choisir le type</strong>
-              <p>Sélectionnez Standard ou eSIM selon le lot reçu.</p>
+              <p>Sélectionnez Standard ou eSIM </p>
             </div>
           </div>
           <div class="guide-step">
             <span class="step-num">2</span>
             <div>
-              <strong>Remplir ou générer</strong>
-              <p>Saisissez les identifiants ou utilisez le bouton « Générer ».</p>
+              <strong>Remplir</strong>
+              <p>Saisissez les identifiants</p>
             </div>
           </div>
           <div class="guide-step">
@@ -239,11 +219,11 @@
           </h3>
         </div>
         <div class="card-body">
-          <p class="quick-add-desc">Générer un lot de cartes SIM automatiquement :</p>
+          <p class="quick-add-desc"> :</p>
           <div class="quick-add-buttons">
-            <button class="btn btn-ghost btn-sm" (click)="generateBatch(5)">+5 SIM</button>
-            <button class="btn btn-ghost btn-sm" (click)="generateBatch(10)">+10 SIM</button>
-            <button class="btn btn-ghost btn-sm" (click)="generateBatch(20)">+20 SIM</button>
+            <button class="btn btn-ghost btn-sm" (click)="generateBatch(10)">Lot de 10</button>
+            <button class="btn btn-ghost btn-sm" (click)="generateBatch(25)">Lot de 25</button>
+            <button class="btn btn-ghost btn-sm" (click)="generateBatch(50)">Lot de 50</button>
           </div>
         </div>
       </div>

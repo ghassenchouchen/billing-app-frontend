@@ -82,9 +82,23 @@ export class CreateUserComponent implements OnInit, OnDestroy {
   }
 
   get formValid(): boolean {
-    if (!this.firstName || !this.lastName || !this.role) return false;
+    if (!this.firstName.trim() || !this.lastName.trim() || !this.role) return false;
+    if (!this.email.trim()) return false;
+    if (!this.isValidEmail(this.email)) return false;
+    if (!this.phone.trim()) return false;
+    if (!this.isValidPhone(this.phone)) return false;
     if (this.needsBoutique && !this.selectedBoutiqueId) return false;
     return true;
+  }
+
+  isValidEmail(email: string): boolean {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  }
+
+  isValidPhone(phone: string): boolean {
+    const phoneRegex = /^\d{8}$/;
+    return phoneRegex.test(phone.replace(/\s+/g, ''));
   }
 
   private generatePassword(): string {
@@ -102,8 +116,23 @@ export class CreateUserComponent implements OnInit, OnDestroy {
     this.selectedBoutiqueId = boutique.id;
   }
 
+  onPhoneChange(): void {
+    // Remove non-digits and limit to 8 characters
+    this.phone = this.phone.replace(/\D/g, '').slice(0, 8);
+  }
+
   submitForm(): void {
     if (!this.formValid || this.saving) return;
+
+    if (!this.isValidEmail(this.email)) {
+      this.errorMessage = 'Adresse email invalide';
+      return;
+    }
+
+    if (!this.isValidPhone(this.phone)) {
+      this.errorMessage = 'Numéro de téléphone invalide (8 chiffres requis)';
+      return;
+    }
 
     this.saving = true;
     this.errorMessage = '';

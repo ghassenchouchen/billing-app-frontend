@@ -131,13 +131,13 @@
       <!-- Filter chips -->
       <div class="offer-filters">
         <button class="filter-chip" [class.active]="offerFilter === 'Tous'" (click)="setOfferFilter('Tous')">Tous</button>
-        <button class="filter-chip" [class.active]="offerFilter === 'Mobile'" (click)="setOfferFilter('Mobile')">
+        <button class="filter-chip" *ngIf="showMobileFilter" [class.active]="offerFilter === 'Mobile'" (click)="setOfferFilter('Mobile')">
           <span class="material-icons">smartphone</span> Mobile
         </button>
         <button class="filter-chip" [class.active]="offerFilter === 'Internet'" (click)="setOfferFilter('Internet')">
           <span class="material-icons">wifi</span> Internet Fixe
         </button>
-        <button class="filter-chip" [class.active]="offerFilter === 'B2B'" (click)="setOfferFilter('B2B')">
+        <button class="filter-chip" *ngIf="showB2BFilter" [class.active]="offerFilter === 'B2B'" (click)="setOfferFilter('B2B')">
           <span class="material-icons">business</span> B2B
         </button>
       </div>

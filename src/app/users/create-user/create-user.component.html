@@ -31,22 +31,24 @@
         <div class="form-grid">
           <div class="form-group">
             <label class="form-label">Prénom</label>
-            <input type="text" class="form-control" placeholder="ex: Marie" [(ngModel)]="firstName" name="firstName" required>
+            <input type="text" class="form-control" placeholder="ex: Flen" [(ngModel)]="firstName" name="firstName" required>
           </div>
           <div class="form-group">
             <label class="form-label">Nom</label>
-            <input type="text" class="form-control" placeholder="ex: Durand" [(ngModel)]="lastName" name="lastName" required>
+            <input type="text" class="form-control" placeholder="ex: Fouleni" [(ngModel)]="lastName" name="lastName" required>
           </div>
           <div class="form-group">
-            <label class="form-label">E-mail professionnel</label>
-            <input type="email" class="form-control" placeholder="m.durand@telecom.tn" [(ngModel)]="email" name="email">
+            <label class="form-label">E-mail professionnel *</label>
+            <input type="email" class="form-control" placeholder="m.fouleni@telecom.tn" [(ngModel)]="email" name="email" required>
+            <div class="form-error" *ngIf="email && !isValidEmail(email)">Email invalide</div>
           </div>
           <div class="form-group">
-            <label class="form-label">Téléphone</label>
+            <label class="form-label">Téléphone *</label>
             <div class="input-prefix-wrapper">
               <span class="input-prefix">+216</span>
-              <input type="tel" class="form-control has-prefix" placeholder="20 000 000" [(ngModel)]="phone" name="phone">
+              <input type="tel" class="form-control has-prefix" placeholder="20 000 000" [(ngModel)]="phone" name="phone" (input)="onPhoneChange()" maxlength="8" required>
             </div>
+            <div class="form-error" *ngIf="phone && !isValidPhone(phone)">8 chiffres uniquement</div>
           </div>
         </div>
 

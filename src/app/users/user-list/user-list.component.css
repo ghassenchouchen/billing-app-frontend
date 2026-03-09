@@ -179,6 +179,10 @@
   background: #ecfdf5;
   color: #059669;
 }
+.btn-icon.delete:hover {
+  background: #fef2f2;
+  color: #ef4444;
+}
 .btn-icon .material-icons {
   font-size: 18px;
 }

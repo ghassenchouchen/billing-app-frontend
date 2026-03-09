@@ -4,7 +4,7 @@
 <h2 class="page-title">Gestion Client&egrave;le</h2>
 <p class="page-subtitle">R&eacute;pertoire clients, suivi des comptes et gestion des profils.</p>
 </div>
-<div class="page-actions">
+<div class="page-actions" *ngIf="canCreateCustomer">
 <button class="btn btn-action primary" type="button" (click)="openCreateForm()" [disabled]="showCreateForm">
 <span class="material-icons">person_add</span>
 Nouveau Client

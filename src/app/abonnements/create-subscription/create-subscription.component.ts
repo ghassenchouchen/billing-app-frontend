@@ -142,25 +142,68 @@ export class CreateSubscriptionComponent implements OnInit, OnDestroy {
     this.currentStep = 1;
   }
 
-  // ─── Offer selection ───
+
+  private isMobileOffer(offer: Offer): boolean {
+    const name = (offer.libelle || offer.nom || '').toLowerCase();
+    const desc = (offer.description || '').toLowerCase();
+    return !!(name.match(/mobile|4g|5g|forfait|prépayé|prepaid/) ||
+              desc.match(/appel|sms|data|go\s|go$/));
+  }
+
+  /** Check if an offer is B2B / Enterprise */
+  private isB2BOffer(offer: Offer): boolean {
+    const name = (offer.libelle || offer.nom || '').toLowerCase();
+    return !!name.match(/entreprise|pro|business|convergent/);
+  }
+
+  /** Check if an offer includes a SIM (e.g. clé 4G, boxe 4G) */
+  private offerIncludesSim(offer: Offer): boolean {
+    const name = (offer.libelle || offer.nom || '').toLowerCase();
+    return !!name.match(/clé|boxe|box\s|routeur|hotspot/);
+  }
+
+  /** Get the base list of offers filtered by customer context */
+  private getContextFilteredOffers(): Offer[] {
+    let base = this.offers.filter(o => o.status === 'ACTIVE' || o.active);
+
+    if (this.selectedCustomer) {
+      const isB2B = this.selectedCustomer.type === 'BUSINESS';
+      const hasSim = this.selectedCustomer.hasSim === true;
+
+      // Individual customer → hide B2B offers
+      if (!isB2B) {
+        base = base.filter(o => !this.isB2BOffer(o));
+      }
+
+      // Customer without SIM → hide mobile offers (unless the offer includes a SIM)
+      if (!hasSim) {
+        base = base.filter(o => !this.isMobileOffer(o) || this.offerIncludesSim(o));
+      }
+    }
+    return base;
+  }
+
+  get showMobileFilter(): boolean {
+    return this.getContextFilteredOffers().some(o => this.isMobileOffer(o));
+  }
+
+  get showB2BFilter(): boolean {
+    return this.getContextFilteredOffers().some(o => this.isB2BOffer(o));
+  }
+
   setOfferFilter(filter: string): void {
     this.offerFilter = filter;
-    const active = this.offers.filter(o => o.status === 'ACTIVE' || o.active);
+    const active = this.getContextFilteredOffers();
     if (filter === 'Tous') {
       this.filteredOffers = active;
     } else if (filter === 'Mobile') {
-      this.filteredOffers = active.filter(o =>
-        (o.libelle || o.nom || '').toLowerCase().match(/mobile|4g|5g|forfait/) ||
-        (o.description || '').toLowerCase().match(/appel|sms|data/)
-      );
+      this.filteredOffers = active.filter(o => this.isMobileOffer(o));
     } else if (filter === 'Internet') {
       this.filteredOffers = active.filter(o =>
         (o.libelle || o.nom || '').toLowerCase().match(/fibre|internet|adsl/)
       );
     } else if (filter === 'B2B') {
-      this.filteredOffers = active.filter(o =>
-        (o.libelle || o.nom || '').toLowerCase().match(/entreprise|pro|business|convergent/)
-      );
+      this.filteredOffers = active.filter(o => this.isB2BOffer(o));
     }
   }
 
@@ -169,7 +212,6 @@ export class CreateSubscriptionComponent implements OnInit, OnDestroy {
     this.formErrors = {};
   }
 
-  // ─── Wizard navigation ───
   nextStep(): void {
     if (this.currentStep === 1) {
       if (!this.selectedCustomer) {
@@ -178,6 +220,9 @@ export class CreateSubscriptionComponent implements OnInit, OnDestroy {
       }
       this.formErrors = {};
       this.currentStep = 2;
+      // Apply contextual offer filter based on selected customer
+      this.offerFilter = 'Tous';
+      this.filteredOffers = this.getContextFilteredOffers();
     } else if (this.currentStep === 2) {
       if (!this.selectedOffer) {
         this.formErrors['offer'] = 'Veuillez sélectionner une offre.';

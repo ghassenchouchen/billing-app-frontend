@@ -21,6 +21,7 @@ import { UserListComponent } from './users/user-list/user-list.component';
 import { CreateUserComponent as CreateUserComponentAdmin } from './users/create-user/create-user.component';
 import { CreateBoutiqueComponent } from './boutique/create-boutique/create-boutique.component';
 import { AddStockComponent } from './boutique/add-stock/add-stock.component';
+import { AdminBoutiqueDetailComponent } from './boutique/admin-boutique-detail/admin-boutique-detail.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'Login', pathMatch: 'full' },
@@ -42,6 +43,7 @@ const routes: Routes = [
   { path: 'Boutique/team', component: BoutiqueTeamComponent, canActivate: [AuthGuard] },
   { path: 'Boutiques', component: AdminBoutiquesComponent, canActivate: [AuthGuard] },
   { path: 'Boutiques/new', component: CreateBoutiqueComponent, canActivate: [AuthGuard] },
+  { path: 'Boutiques/:id', component: AdminBoutiqueDetailComponent, canActivate: [AuthGuard] },
   { path: 'Users', component: UserListComponent, canActivate: [AuthGuard] },
   { path: 'Users/new', component: CreateUserComponentAdmin, canActivate: [AuthGuard] },
   { path: 'Login', component: LoginComponent },

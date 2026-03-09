@@ -4,12 +4,7 @@
       <h2 class="page-title">Gestion des Utilisateurs</h2>
       <p class="page-subtitle">Gérez les accès, les rôles et les comptes de la plateforme.</p>
     </div>
-    <div class="page-actions">
-      <button class="btn btn-action primary" (click)="createUser()">
-        <span class="material-icons">person_add</span>
-        Nouvel Utilisateur
-      </button>
-    </div>
+    <!-- Admin can consult/modify users but not create new ones -->
   </div>
 
   <div class="section-card">
@@ -36,7 +31,7 @@
           <tr>
             <th>Utilisateur</th>
             <th>Rôle</th>
-            <th>Boutique Assignée</th>
+            <th>Boutique </th>
             <th>Statut</th>
             <th>Date création</th>
             <th class="text-right">Actions</th>
@@ -78,6 +73,9 @@
                 </button>
                 <button *ngIf="user.status === 'DISABLED'" class="btn-icon success" title="Réactiver" (click)="enableUser(user)">
                   <span class="material-icons">person</span>
+                </button>
+                <button class="btn-icon delete" title="Supprimer" (click)="deleteUser(user)">
+                  <span class="material-icons">delete</span>
                 </button>
               </div>
             </td>

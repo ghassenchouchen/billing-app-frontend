@@ -29,6 +29,7 @@ import { UserListComponent } from './users/user-list/user-list.component';
 import { CreateUserComponent as CreateUserComponentAdmin } from './users/create-user/create-user.component';
 import { CreateBoutiqueComponent } from './boutique/create-boutique/create-boutique.component';
 import { AddStockComponent } from './boutique/add-stock/add-stock.component';
+import { AdminBoutiqueDetailComponent } from './boutique/admin-boutique-detail/admin-boutique-detail.component';
 
 import { ApiService } from './core/services/api.service';
 import { AuthService } from './core/services/auth.service';
@@ -37,6 +38,8 @@ import { UserService } from './core/services/user.service';
 
 import { AuthInterceptor } from './core/interceptors/auth.interceptor';
 import { ErrorInterceptor } from './core/interceptors/error.interceptor';
+
+import { SHARED_PIPES } from './shared/pipes';
 
 @NgModule({
   declarations: [
@@ -62,6 +65,8 @@ import { ErrorInterceptor } from './core/interceptors/error.interceptor';
     CreateUserComponentAdmin,
     CreateBoutiqueComponent,
     AddStockComponent,
+    AdminBoutiqueDetailComponent,
+    ...SHARED_PIPES,
   ],
   imports: [
     BrowserModule,

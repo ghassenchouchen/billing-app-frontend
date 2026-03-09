@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { BoutiqueApiService, Boutique, StockSim, TransactionBoutique, DashboardData } from '../../core/services/boutique-api.service';
@@ -36,7 +37,7 @@ export class AdminBoutiquesComponent implements OnInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
 
-  constructor(private boutiqueApi: BoutiqueApiService) {}
+  constructor(private boutiqueApi: BoutiqueApiService, private router: Router) {}
 
   ngOnInit(): void {
     this.loadBoutiques();
@@ -108,42 +109,7 @@ export class AdminBoutiquesComponent implements OnInit, OnDestroy {
   }
 
   selectBoutique(boutique: BoutiqueWithStats): void {
-    if (this.selectedBoutique?.id === boutique.id) {
-      this.selectedBoutique = null;
-      return;
-    }
-    this.selectedBoutique = boutique;
-    this.detailLoading = true;
-
-    this.boutiqueApi.getDashboard(boutique.id)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (d) => { boutique.dashboard = d; },
-        error: () => {}
-      });
-
-    this.boutiqueApi.getStock(boutique.id)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (stock) => {
-          boutique.stock = stock;
-          boutique.stockCount = stock.length;
-          boutique.availableSim = stock.filter(s => s.status === 'AVAILABLE').length;
-        },
-        error: () => {}
-      });
-
-    this.boutiqueApi.getTransactions(boutique.id)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (txns) => {
-          boutique.recentTransactions = txns.slice(0, 8);
-          boutique.transactionCount = txns.length;
-          boutique.revenue = txns.filter(t => t.status === 'COMPLETED').reduce((sum, t) => sum + t.montant, 0);
-          this.detailLoading = false;
-        },
-        error: () => { this.detailLoading = false; }
-      });
+    this.router.navigate(['/Boutiques', boutique.id]);
   }
 
   closeBoutiqueDetail(): void {

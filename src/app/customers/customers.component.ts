@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { CustomerService } from '../shared/services/customer.service';
+import { AuthService } from '../core/services/auth.service';
 import { Customer, CustomerDetails } from '../core/models';
 
 @Component({
@@ -34,7 +35,15 @@ export class CustomersComponent implements OnInit, OnDestroy {
     return !!(this.searchTerm || this.typeFilter || this.statusFilter);
   }
 
-  constructor(private customerService: CustomerService, private router: Router) {}
+  constructor(
+    private customerService: CustomerService,
+    private router: Router,
+    private authService: AuthService
+  ) {}
+
+  get canCreateCustomer(): boolean {
+    return !this.authService.isAdmin();
+  }
 
   ngOnInit(): void {
     this.loadCustomers();

@@ -36,10 +36,15 @@
     <div class="kpi-card kpi-sim" [class.kpi-alert]="dashboard && dashboard.simLowStock > 0">
       <div class="kpi-top">
         <div class="kpi-icon sim"><span class="material-icons">sim_card</span></div>
-        <span class="kpi-badge" [class.warning]="dashboard && dashboard.simLowStock > 0"
-              [class.success]="!dashboard || dashboard.simLowStock === 0">
-          {{ dashboard && dashboard.simLowStock > 0 ? 'Stock bas' : 'OK' }}
-        </span>
+        <div class="kpi-top-actions">
+          <span class="kpi-badge" [class.warning]="dashboard && dashboard.simLowStock > 0"
+                [class.success]="!dashboard || dashboard.simLowStock === 0">
+            {{ dashboard && dashboard.simLowStock > 0 ? 'Stock bas' : 'OK' }}
+          </span>
+          <a class="kpi-action-btn warning" *ngIf="dashboard && dashboard.simLowStock > 0" routerLink="/Boutique/stock/add" title="Réapprovisionner">
+            <span class="material-icons">add_circle_outline</span>
+          </a>
+        </div>
       </div>
       <div class="kpi-label">SIM En stock</div>
       <div class="kpi-value">{{ dashboard ? dashboard.simAvailable : '—' }}</div>
@@ -58,7 +63,6 @@
     </div>
   </div>
 
-  <!-- Recent Transactions -->
   <div class="section-card data-table">
     <div class="card-header">
       <div>

@@ -14,6 +14,7 @@ export interface Customer {
   status?: string;
   accountBalance?: number;
   creditLimit?: number;
+  hasSim?: boolean;         // Whether customer has an assigned SIM
   createdAt?: string;
 }
 

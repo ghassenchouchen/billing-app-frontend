@@ -79,8 +79,11 @@ export class AuthInterceptor implements HttpInterceptor {
   }
 
   private addToken(request: HttpRequest<any>, token: string): HttpRequest<any> {
+    // Clone request and add/update Authorization header while preserving other headers
     return request.clone({
-      setHeaders: { Authorization: `Bearer ${token}` }
+      setHeaders: { 
+        Authorization: `Bearer ${token}` 
+      }
     });
   }
 

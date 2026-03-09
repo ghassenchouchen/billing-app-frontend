@@ -202,21 +202,26 @@ export class SimActivateComponent implements OnInit, OnDestroy {
     this.assigning = true;
     this.error = '';
 
-   
-    const customerIdMatch = this.selectedCustomer.customerRef.match(/\d+/);
-    const clientId = customerIdMatch ? parseInt(customerIdMatch[0], 10) : 0;
+    // Extract client ID from customerRef (e.g., 'CL-000001' -> 1)
+    const match = this.selectedCustomer.customerRef.match(/(\d+)$/);
+    const clientId = match ? parseInt(match[1], 10) : 0;
 
-    // Attribuer SIM and activate it
+    if (!clientId) {
+      this.error = 'ID client invalide';
+      this.assigning = false;
+      return;
+    }
+
     this.boutiqueApi.assignAndActivateSim(this.sim.iccid, clientId)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: () => {
-          this.success = true;
           this.assigning = false;
+          this.router.navigate(['/Boutique/stock']);
         },
         error: () => {
-          this.success = true;
           this.assigning = false;
+          this.error = 'Erreur lors de l\'activation de la SIM';
         }
       });
   }

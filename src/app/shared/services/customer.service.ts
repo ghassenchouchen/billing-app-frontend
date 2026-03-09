@@ -15,6 +15,10 @@ export class CustomerService {
     return this.http.get<Customer[]>(this.baseUrl);
   }
 
+  getCustomersByBoutique(boutiqueRef: string): Observable<Customer[]> {
+    return this.http.get<Customer[]>(this.baseUrl, { params: { boutiqueRef } });
+  }
+
   getActiveCustomers(): Observable<Customer[]> {
     return this.http.get<Customer[]>(`${this.baseUrl}/active`);
   }
