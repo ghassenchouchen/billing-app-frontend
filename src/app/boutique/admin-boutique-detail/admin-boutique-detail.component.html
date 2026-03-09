@@ -54,10 +54,6 @@
               <span class="material-icons">email</span>
               <span>{{ boutique.email }}</span>
             </div>
-            <div class="info-item">
-              <span class="material-icons">event</span>
-              <span>Ouverture: {{ boutique.createdAt | dateFr }}</span>
-            </div>
           </div>
         </div>
       </div>
@@ -100,7 +96,7 @@
         <span class="material-icons">receipt_long</span> Transactions
       </button>
       <button class="tab-btn" [class.active]="activeTab === 'team'" (click)="switchTab('team')">
-        <span class="material-icons">group</span> Équipe
+        <span class="material-icons">engineering</span> Équipe
       </button>
       <button class="tab-btn" [class.active]="activeTab === 'customers'" (click)="switchTab('customers')">
         <span class="material-icons">people</span> Clients

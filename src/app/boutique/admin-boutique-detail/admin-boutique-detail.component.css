@@ -38,7 +38,7 @@
 }
 .header-left {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 16px;
 }
 .btn-back {
@@ -46,6 +46,7 @@
   align-items: center;
   justify-content: center;
   width: 40px; height: 40px;
+  margin-top: 2px;
   border: 1px solid #e2e8f0;
   border-radius: 10px;
   background: #fff;
